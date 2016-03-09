@@ -30,17 +30,18 @@ import org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter;
 import org.jgrasstools.hortonmachine.utils.HMTestCase;
 
 
-import snowMeltingPointCase.SnowMeltingPointCase;
+
+import snowMeltingPointCaseEI.SnowMeltingPointCase;
 
 /**
  * Test the {@link Snow} module.
  * 
  * @author Marialaura BAncheri
  */
-public class TestSnowMeltingPointCase extends HMTestCase {
+public class TestSnowMeltingPointCaseEI extends HMTestCase {
 
 
-	public TestSnowMeltingPointCase() throws Exception {
+	public TestSnowMeltingPointCaseEI() throws Exception {
 
 
 		String startDate = "2007-10-17 00:00" ;
@@ -75,13 +76,13 @@ public class TestSnowMeltingPointCase extends HMTestCase {
 		skyViewReader.process();
 		GridCoverage2D skyView = skyViewReader.outRaster;
 
-
+		/*
 		OmsRasterReader EIJanReader = new OmsRasterReader();
 		EIJanReader.file = "resources/Input/GENNAIO.asc";
 		EIJanReader.fileNovalue = -9999.0;
 		EIJanReader.geodataNovalue = Double.NaN;
 		EIJanReader.process();
-		GridCoverage2D gennaio = EIJanReader.outRaster;
+		GridCoverage2D gennaio = EIJanReader.outRaster;*/
 
 		OmsRasterReader EIFebReader = new OmsRasterReader();
 		EIFebReader.file = "resources/Input/FEBBRAIO.asc";
@@ -90,6 +91,7 @@ public class TestSnowMeltingPointCase extends HMTestCase {
 		EIFebReader.process();
 		GridCoverage2D febbraio = EIFebReader.outRaster;
 
+		/*
 		OmsRasterReader EIMarReader = new OmsRasterReader();
 		EIMarReader.file = "resources/Input/MARZO.asc";
 		EIMarReader.fileNovalue = -9999.0;
@@ -116,7 +118,7 @@ public class TestSnowMeltingPointCase extends HMTestCase {
 		EIJuneReader.fileNovalue = -9999.0;
 		EIJuneReader.geodataNovalue = Double.NaN;
 		EIJuneReader.process();
-		GridCoverage2D giugno = EIJuneReader.outRaster;
+		GridCoverage2D giugno = EIJuneReader.outRaster; */
 
 
 		OmsShapefileFeatureReader stationsReader = new OmsShapefileFeatureReader();
@@ -144,12 +146,12 @@ public class TestSnowMeltingPointCase extends HMTestCase {
 
 		SnowMeltingPointCase snow = new SnowMeltingPointCase();
 		snow.inSkyview = skyView;
-		snow.inInsJan=gennaio;
+		snow.inInsJan=febbraio;
 		snow.inInsFeb=febbraio;
-		snow.inInsMar=marzo;
-		snow.inInsApr=aprile;
-		snow.inInsMay=maggio;
-		snow.inInsJun=giugno;
+		snow.inInsMar=febbraio;
+		snow.inInsApr=febbraio;
+		snow.inInsMay=febbraio;
+		snow.inInsJun=febbraio;
 		snow.inDem = dem;
 		snow.inStations = stationsFC;
 		snow.fStationsid = "Field2";

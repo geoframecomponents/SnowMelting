@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package snowMeltingPointCase;
+package snowMeltingPointCaseSWRB;
 
 
 import org.jgrasstools.gears.libs.modules.JGTConstants;
@@ -72,7 +72,7 @@ import com.vividsolutions.jts.geom.Point;
 @Name("Snow")
 @Status(Status.CERTIFIED)
 @License("General Public License Version 3 (GPLv3)")
-public class SnowMeltingPointCase extends JGTModel {
+public class SnowMeltingPointCaseSWRB extends JGTModel {
 
 
 	@Description("The Hashmap with the time series of the rainfall values")
@@ -81,7 +81,7 @@ public class SnowMeltingPointCase extends JGTModel {
 
 	@Description("The double value of the , once read from the HashMap")
 	double rainfall;
-	
+
 	@Description("The Hashmap with the time series of the snowfall values")
 	@In
 	public HashMap<Integer, double[]> inSnowfallValues;
@@ -103,14 +103,6 @@ public class SnowMeltingPointCase extends JGTModel {
 	@Description("The double value of the  temperature, once read from the HashMap")
 	double temperature;
 
-	@Description("The timeStep allows to chose between the hourly time step"
-			+ " or the daily time step. It could be: "
-			+ " Hourly or Daily")
-	@In
-	public String timeStep;
-	
-	@Description("It is needed to iterate on the date")
-	int step;
 
 	@Description("The map of the skyview factor.")
 	@In
@@ -123,36 +115,6 @@ public class SnowMeltingPointCase extends JGTModel {
 	@Description("The digital elevation model.")
 	@In
 	public GridCoverage2D inDem;
-
-	@Description("The map of the energy index for the month of January")
-	@In
-	public GridCoverage2D inInsJan;
-	WritableRaster energyIJanuary;
-
-	@Description("The map of the energy index for the month of February")
-	@In
-	public GridCoverage2D inInsFeb;
-	WritableRaster energyIFebruary;
-
-	@Description("The map of the energy index for the month of Marh")
-	@In
-	public GridCoverage2D inInsMar;
-	WritableRaster energyIMarch;
-
-	@Description("The map of the energy index for the month of April")
-	@In
-	public GridCoverage2D inInsApr;
-	WritableRaster energyIApril;
-
-	@Description("The map of the energy index for the month of May")
-	@In
-	public GridCoverage2D inInsMay;
-	WritableRaster energyIMay;
-
-	@Description("The map of the energy index for the month of June")
-	@In
-	public GridCoverage2D inInsJun;
-	WritableRaster energyIJune;
 
 	@Description("The shape file with the station measuremnts")
 	@In
@@ -207,9 +169,6 @@ public class SnowMeltingPointCase extends JGTModel {
 	@Description("List of the latitudes of the station ")
 	ArrayList <Double> latitudeStation= new ArrayList <Double>();
 
-	@Description("The energy index value")
-	double EIvalue;
-	EnergyIndex EImode;
 
 	SnowModel snowModel;
 
@@ -225,7 +184,6 @@ public class SnowMeltingPointCase extends JGTModel {
 	@Description("Integration interval")
 	double dt=1;
 
-	DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm").withZone(DateTimeZone.UTC);
 
 	@Description("Final target CRS")
 	CoordinateReferenceSystem targetCRS = DefaultGeographicCRS.WGS84;
@@ -249,12 +207,6 @@ public class SnowMeltingPointCase extends JGTModel {
 	@Execute
 	public void process() throws Exception { 
 
-		// This 2 operations allow to define if we are working with daily or hourly time step
-		// if we are working with Daily time step, every time it adds to the start date a day
-		// otherwise it adds an hour, "step increments at the end of the process
-		// the actual date is needed to compute the actual energy index	
-		DateTime startDateTime = formatter.parseDateTime(tStartDate);
-		DateTime date=(timeStep.equals("Daily"))?startDateTime.plusDays(step):startDateTime.plusHours(step);
 
 		// computing the reference system of the input DEM
 		CoordinateReferenceSystem sourceCRS = inDem.getCoordinateReferenceSystem2D();
@@ -262,16 +214,7 @@ public class SnowMeltingPointCase extends JGTModel {
 		//  from pixel coordinates (in coverage image) to geographic coordinates (in coverage CRS)
 		MathTransform transf = inDem.getGridGeometry().getCRSToGrid2D();
 
-		// transform the GrifCoverage2D maps into writable rasters
-		if(step==0){
-			skyview=mapsTransform(inSkyview);
-			energyIJanuary=mapsTransform (inInsJan);
-			energyIFebruary=mapsTransform (inInsFeb);
-			energyIMarch=mapsTransform (inInsMar);
-			energyIApril=mapsTransform (inInsApr);
-			energyIMay=mapsTransform (inInsMay);
-			energyIJune=mapsTransform (inInsJun);
-		}
+		skyview=mapsTransform(inSkyview);
 
 
 
@@ -319,24 +262,11 @@ public class SnowMeltingPointCase extends JGTModel {
 			//read the input skyview for the given station position
 			skyviewValue=skyview.getSampleDouble(columnStation.get(i), rowStation.get(i), 0);
 
-			// compute the energy index, considering the two cases, daily and hourly:
-			// if it is daily is the value in the map in the station position 
-			// if it is hourly, we have to distinguish between night and day. During night 
-			//the value is the minimum of the map, during the day is the value at the 
-			//given station position
-			EImode=SimpleEIFactory.createModel(timeStep, date, latitudeStation.get(i), 
-					columnStation.get(i), rowStation.get(i), energyIJanuary,
-					energyIFebruary, energyIMarch,  energyIApril,energyIMay, energyIJune);
-
-			EIvalue=EImode.eiValues();
 
 			// compute the melting and the discharge and stores the results into Hashmap
 			storeResult_series((Integer)idStations[i],computeMeltingDischarge(), computeSWE());
 
 		}
-
-		// upgrade the step for the date
-		step++;	
 
 	}
 
@@ -380,7 +310,7 @@ public class SnowMeltingPointCase extends JGTModel {
 		}
 
 		return id2CoordinatesMap;
-		
+
 	}
 
 
@@ -406,10 +336,10 @@ public class SnowMeltingPointCase extends JGTModel {
 	 * @return the double value of the melting discharge
 	 */
 	private double computeMeltingDischarge(){
-		
+
 		// compute the snowmelt 
 		double melting=(temperature>meltingTemperature)?computeMelting(model,combinedMeltingFactor, temperature, 
-				meltingTemperature, EIvalue,skyviewValue,radiationFactor,shortwaveRadiation):0;
+				meltingTemperature,skyviewValue,radiationFactor,shortwaveRadiation):0;
 
 		melting = Math.min(melting, SWE);
 
@@ -467,17 +397,16 @@ public class SnowMeltingPointCase extends JGTModel {
 	 * @param combinedMeltingFactor is the combined melting factor
 	 * @param temperature is the input temperature
 	 * @param meltingTemperature is the melting temperature
-	 * @param EIvalue is the energy index value
 	 * @param skyviewValue is the the skyview factor value
 	 * @param radiationFactor is the radiation factor
 	 * @param shortwaveRadiation is the shortwave radiation
 	 * @return the double value of the snowmelt
 	 */
-	private double computeMelting(String model,double combinedMeltingFactor,double temperature,double meltingTemperature,double EIvalue,
+	private double computeMelting(String model,double combinedMeltingFactor,double temperature,double meltingTemperature,
 			double skyviewValue,double radiationFactor,double shortwaveRadiation) {
 
 		snowModel=SimpleModelFactory.createModel(model, combinedMeltingFactor, temperature, meltingTemperature, 
-				EIvalue, skyviewValue, radiationFactor, shortwaveRadiation);
+				skyviewValue, radiationFactor, shortwaveRadiation);
 
 		return snowModel.snowValues();
 	}

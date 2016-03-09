@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package snowMeltingPointCase;
+package snowMeltingPointCaseSWRB;
 
 
 // TODO: Auto-generated Javadoc
@@ -27,8 +27,7 @@ public class SimpleModelFactory {
 	
 
 	public static SnowModel createModel(String snowModel,double combinedMeltingFactor,double temperature,
-			double meltingTemperature,double EIvalue,
-			double skyviewValue,double radiationFactor,double shortwaveRadiation ){
+			double meltingTemperature,double skyviewValue,double radiationFactor,double shortwaveRadiation ){
 
 		SnowModel model=null;
 
@@ -37,7 +36,7 @@ public class SimpleModelFactory {
 			model=new ClassicalModel(combinedMeltingFactor, temperature,  meltingTemperature);
 
 		}else if (snowModel.equals("Cazorzi")){
-			model=new CazorziModel(combinedMeltingFactor, temperature,  meltingTemperature,EIvalue,skyviewValue);
+			model=new CazorziModel(combinedMeltingFactor, temperature,  meltingTemperature,shortwaveRadiation,skyviewValue);
 
 		}else if (snowModel.equals("Hoock")){
 			model=new HoockModel(combinedMeltingFactor, radiationFactor, temperature, meltingTemperature,

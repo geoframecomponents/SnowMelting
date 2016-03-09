@@ -16,19 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package snowMeltingPointCase;
+package snowMeltingPointCaseSWRB;
 
 
+// TODO: Auto-generated Javadoc
 /**
- * The Class HoockModel.
+ * The Class CazorziModel.
  */
-public class HoockModel implements SnowModel{
+public class CazorziModel implements SnowModel{
 
 	/** The combined melting factor. */
 	double combinedMeltingFactor;
-	
-	/** The radiation factor. */
-	double radiationFactor;
 	
 	/** The temperature. */
 	double temperature; 
@@ -36,31 +34,29 @@ public class HoockModel implements SnowModel{
 	/** The melting temperature. */
 	double meltingTemperature;
 	
-	/** The shortwave. */
-	double shortwave;
+	/** The energy index. */
+	double shortwaveRadiation;
 	
 	/** The skyview. */
 	double skyview;
 
 
 	/**
-	 * Instantiates a new Hoock model.
+	 * Instantiates a new cazorzi model.
 	 *
 	 * @param combinedMeltingFactor is the combined melting factor
-	 * @param radiationFactor is the radiation factor
 	 * @param temperature is the temperature
 	 * @param meltingTemperature is the melting temperature
-	 * @param shortwave is the shortwave
+	 * @param EI is the energy index
 	 * @param skyview is the skyview
 	 */
-	public HoockModel(double combinedMeltingFactor, double radiationFactor, double temperature, double meltingTemperature,
-			double shortwave, double skyview){
+	public CazorziModel(double combinedMeltingFactor, double temperature, double meltingTemperature,
+			double shortwaveRadiation, double skyview){
 		
 		this.combinedMeltingFactor=combinedMeltingFactor;
 		this.temperature=temperature;
 		this.meltingTemperature=meltingTemperature;
-		this.radiationFactor=radiationFactor;
-		this.shortwave=shortwave;
+		this.shortwaveRadiation=shortwaveRadiation;
 		this.skyview=skyview;
 		
 	}
@@ -72,7 +68,7 @@ public class HoockModel implements SnowModel{
 	 */
 	@Override
 	public double snowValues() {
-		return (combinedMeltingFactor+radiationFactor*shortwave)*(temperature-meltingTemperature)*skyview;
+		return combinedMeltingFactor * (temperature - meltingTemperature)*shortwaveRadiation*skyview;
 	}
 
 

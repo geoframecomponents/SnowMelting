@@ -16,53 +16,68 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package snowMeltingPointCase;
+package snowMeltingPointCaseEI;
+
 import java.awt.image.WritableRaster;
+
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class EIdaily.
+ * The Class EIminimum.
  */
-public class EIdaily implements EnergyIndex{
-
+public class EIminimum implements EnergyIndex{
 
 	/** The energy index map. */
 	WritableRaster energyImap;
 	
-	/** The i index of the column of the pixel in the DEM. */
-	int i;
-	
-	/** The j index of the row of the pixel in the DEM. */
-	int j;
-	
-	/** The hours to the considered month from the 21st of December. */
+	/** The hours to the considered month from the 21st December. */
 	double hoursToMonth;
 	
+	/** The height of the input map. */
+	int height;
+	
+	/** The width of the input map. */
+	int width;
+
+
 
 	/**
-	 * Instantiates a new energy index model daily hour.
+	 * Instantiates a new energy index minimum model.
 	 *
 	 * @param energyImap the energy index map
-	 * @param i the i index
-	 * @param j the j index 
-	 * @param hoursToMonth the hours to month considered month from the 21st of December
+	 * @param hoursToMonth the hours to the considered month
 	 */
-	public EIdaily(WritableRaster energyImap, int i, int j, double hoursToMonth){
-		
-	this.energyImap=energyImap;
-	this.i=i;
-	this.j=j;
-	this.hoursToMonth=hoursToMonth;
+	public EIminimum(WritableRaster energyImap, double hoursToMonth){
 
+		this.energyImap=energyImap;
+		this.hoursToMonth=hoursToMonth;
+		height=energyImap.getHeight();
+		width=energyImap.getWidth();		
 	}
 
 	/* (non-Javadoc)
 	 * @see snowMeltingPointCase.EnergyIndex#eiValues()
 	 */
 	public double eiValues() {
-		// TODO Auto-generated method stub
-		return energyImap.getSampleDouble(i, j, 0) / (hoursToMonth );
+
+		double minimo = 10000000;
+		for (int j = 0; j < height; j++) {
+			for (int i = 0; i < width; i++) {
+				if (energyImap.getSample(i, j, 0) != -9999) {
+					if (energyImap.getSample(i, j, 0) / hoursToMonth > 0.0
+							&& energyImap.getSample(i, j, 0) / hoursToMonth < minimo) {
+						minimo = energyImap.getSample(i, j, 0) / hoursToMonth;
+
+					}
+				}
+			}
+		}
+
+		return minimo;
+
 	}
+
+
 
 
 
