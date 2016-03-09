@@ -77,28 +77,28 @@ public class SnowMeltingRasterCase extends JGTModel {
 	@In
 	public GridCoverage2D inTempGrid;
 
-	@Description("The double value of the  temperature, once read from the HashMap")
+	@Description("The double value of the  temperature")
 	double temperature;
 
 	@Description("The map of the the interpolated precipitation.")
 	@In
 	public GridCoverage2D inRainGrid;
 
-	@Description("The double value of the rainfall, once read from the HashMap")
+	@Description("The double value of the rainfall")
 	double rainfall;
 
 	@Description("The map of the interpolated solar radiation.")
 	@In
 	public GridCoverage2D inSnowfallGrid;
 
-	@Description("The double value of the snowfall, once read from the HashMap")
+	@Description("The double value of the snowfall")
 	double snowfall;
 
 	@Description("The map of the interpolated solar radiation.")
 	@In
 	public GridCoverage2D inSolarGrid;
 
-	@Description("The double value of the  shortwave radiation, once read from the HashMap")
+	@Description("The double value of the  shortwave radiation")
 	double shortwaveRadiation;
 
 
@@ -197,12 +197,6 @@ public class SnowMeltingRasterCase extends JGTModel {
 			+ "the total precipitation")
 	@In
 	public double m1 = 1.0;
-
-	@Description("List of the indeces of the columns of the station in the map")
-	ArrayList <Integer> columnStation= new ArrayList <Integer>();
-
-	@Description("List of the indeces of the rows of the station in the map")
-	ArrayList <Integer> rowStation= new ArrayList <Integer>();
 
 	@Description("List of the latitudes of the station ")
 	ArrayList <Double> latitudeStation= new ArrayList <Double>();
@@ -337,9 +331,9 @@ public class SnowMeltingRasterCase extends JGTModel {
 		CoverageUtilities.setNovalueBorder(outMeltingWritableRaster);
 		CoverageUtilities.setNovalueBorder(outSWEWritableRaster);
 
-		outMeltingGrid = CoverageUtilities.buildCoverage("CI", outMeltingWritableRaster, 
+		outMeltingGrid = CoverageUtilities.buildCoverage("Melting", outMeltingWritableRaster, 
 				regionMap, inDem.getCoordinateReferenceSystem());
-		outSWEGrid= CoverageUtilities.buildCoverage("CI", outSWEWritableRaster, 
+		outSWEGrid= CoverageUtilities.buildCoverage("SWE", outSWEWritableRaster, 
 				regionMap, inDem.getCoordinateReferenceSystem());
 
 		// upgrade the step for the new date
