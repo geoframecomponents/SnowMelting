@@ -30,9 +30,6 @@ import org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter;
 import org.jgrasstools.hortonmachine.utils.HMTestCase;
 
 
-
-
-import snowMeltingPointCaseEI.SnowMeltingPointCase;
 import snowMeltingPointCaseSWRB.SnowMeltingPointCaseSWRB;
 
 /**
@@ -113,7 +110,6 @@ public class TestSnowMeltingPointCaseSWRB extends HMTestCase {
 
 			snow.model="Cazorzi";
 			snow.tStartDate=startDate;
-			snow.fStationsid="Field2";
 			snow.combinedMeltingFactor=0.1813454712889037;
 			snow.freezingFactor=0.006000776959626719;
 			snow.radiationFactor=0.006000776959626719;

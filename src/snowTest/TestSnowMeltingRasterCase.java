@@ -115,7 +115,7 @@ public class TestSnowMeltingRasterCase extends HMTestCase {
 		snow.inDem = dem;
 
 
-		snow.timeStep="Hourly";
+		snow.doHourly=true;
 		snow.model="Cazorzi";
 		snow.tStartDate=startDate;
 		snow.combinedMeltingFactor=0.1813454712889037;

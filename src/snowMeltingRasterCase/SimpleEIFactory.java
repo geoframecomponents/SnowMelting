@@ -28,27 +28,20 @@ import org.joda.time.DateTime;
  */
 public class SimpleEIFactory {
 	
-	private static double hoursToJan = 720;
-	private static double hoursToFeb = 1416;
-	private static double hoursToMar = 2160;
-	private static double hoursToApr = 2880;
-	private static double hoursToMay = 3631;
-	private static double hoursToJune = 4351;
+	private static double daysToJan = 30;
+	private static double daysToFeb = 59;
+	private static double daysToMar = 90;
+	private static double daysToApr = 120;
+	private static double daysToMay = 151;
+	private static double daysToJune = 181;
 
-	public static EnergyIndex createModel(String type, DateTime date, double latitude, int i, int j, WritableRaster energyIJanuary,
+	public static EnergyIndex createModel(boolean doHourly, DateTime date, double latitude, int i, int j, WritableRaster energyIJanuary,
 			WritableRaster energyIFebruary, WritableRaster energyIMarch, WritableRaster energyIApril,
 			WritableRaster energyIMay, WritableRaster energyIJune){
 
 		EnergyIndex model=null;
 		
-		if(type.equals("Daily")){
-			hoursToJan = 720/24;
-			hoursToFeb = 1416/24;
-			hoursToMar = 2160/24;
-			hoursToApr = 2880/24;
-			hoursToMay = 3631/24;
-			hoursToJune = 4351/24;
-		}
+
 
 		int month=date.getMonthOfYear();
 		int hour=date.getHourOfDay();
@@ -69,88 +62,88 @@ public class SimpleEIFactory {
 
 		String EIvalue;
 
-		if ((hour>= (sunrise) && hour <= (sunset))|type.equals("Daily")) EIvalue="daily";
+		if ((hour>= (sunrise) && hour <= (sunset))|doHourly==false) EIvalue="daily";
 		else EIvalue="minimum";
 		
 
 
 
 		if (EIvalue.equals("daily") &month==1){
-			model=new EIdaily(energyIJanuary, i,j,hoursToJan);
+			model=new EIdaily(energyIJanuary, i,j,daysToJan);
 
 		}else if (EIvalue.equals("daily") &month==2){
-			model=new EIdaily(energyIFebruary, i,j,hoursToFeb);
+			model=new EIdaily(energyIFebruary, i,j,daysToFeb);
 
 		}else if (EIvalue.equals("daily") &month==3){
-			model=new EIdaily(energyIMarch, i,j,hoursToMar);
+			model=new EIdaily(energyIMarch, i,j,daysToMar);
 
 		}else if (EIvalue.equals("daily") &month==4){
-			model=new EIdaily(energyIApril, i,j,hoursToApr);
+			model=new EIdaily(energyIApril, i,j,daysToApr);
 
 		}else if (EIvalue.equals("daily") &month==5){
-			model=new EIdaily(energyIMay, i,j,hoursToMay);
+			model=new EIdaily(energyIMay, i,j,daysToMay);
 
 		}else if (EIvalue.equals("daily") &month==6){
-			model=new EIdaily(energyIJune, i,j,hoursToJune);
+			model=new EIdaily(energyIJune, i,j,daysToJune);
 
 		}else if (EIvalue.equals("daily") &month==7){
-			model=new EIdaily(energyIJune, i,j,hoursToJune);
+			model=new EIdaily(energyIJune, i,j,daysToJune);
 
 		}else if (EIvalue.equals("daily") &month==8){
-			model=new EIdaily(energyIJune, i,j,hoursToJune);
+			model=new EIdaily(energyIJune, i,j,daysToJune);
 
 		}else if (EIvalue.equals("daily") &month==9){
 
-			model=new EIdaily(energyIJune, i,j,hoursToJune);
+			model=new EIdaily(energyIJune, i,j,daysToJune);
 
 		}else if (EIvalue.equals("daily") &month==10){
-			model=new EIdaily(energyIFebruary, i,j,hoursToFeb);
+			model=new EIdaily(energyIFebruary, i,j,daysToFeb);
 
 		}else if (EIvalue.equals("daily") &month==11){
-			model=new EIdaily(energyIFebruary, i,j,hoursToFeb);
+			model=new EIdaily(energyIFebruary, i,j,daysToFeb);
 
 		}else if (EIvalue.equals("daily") &month==12){
-			model=new EIdaily(energyIFebruary, i,j,hoursToFeb);
+			model=new EIdaily(energyIFebruary, i,j,daysToFeb);
 			
 			
 
 
 		}else	if (EIvalue.equals("mimimum") &month==1){
-			model=new EIminimum(energyIJanuary,hoursToJan);
+			model=new EIminimum(energyIJanuary,daysToJan);
 
 		}else if (EIvalue.equals("minimum") &month==2){
-			model=new EIminimum(energyIFebruary,hoursToFeb);
+			model=new EIminimum(energyIFebruary,daysToFeb);
 
 		}else if (EIvalue.equals("minimum") &month==3){
-			model=new EIminimum(energyIMarch,hoursToMar);
+			model=new EIminimum(energyIMarch,daysToMar);
 
 		}else if (EIvalue.equals("minimum") &month==4){
-			model=new EIminimum(energyIApril,hoursToApr);
+			model=new EIminimum(energyIApril,daysToApr);
 
 		}else if (EIvalue.equals("minimum") &month==5){
-			model=new EIminimum(energyIMay,hoursToMay);
+			model=new EIminimum(energyIMay,daysToMay);
 
 		}else if (EIvalue.equals("minimum") &month==6){
-			model=new EIminimum(energyIJune,hoursToJune);
+			model=new EIminimum(energyIJune,daysToJune);
 
 		}else if (EIvalue.equals("minimum") &month==7){
-			model=new EIminimum(energyIJune,hoursToJune);
+			model=new EIminimum(energyIJune,daysToJune);
 
 		}else if (EIvalue.equals("minimum") &month==8){
-			model=new EIminimum( energyIJune,hoursToJune);
+			model=new EIminimum( energyIJune,daysToJune);
 
 		}else if (EIvalue.equals("minimum") &month==9){
 
-			model=new EIminimum(energyIJune,hoursToJune);
+			model=new EIminimum(energyIJune,daysToJune);
 
 		}else if (EIvalue.equals("minimum") &month==10){
-			model=new EIminimum(energyIFebruary,hoursToFeb);
+			model=new EIminimum(energyIFebruary,daysToFeb);
 
 		}else if (EIvalue.equals("minimum") &month==11){
-			model=new EIminimum(energyIFebruary,hoursToFeb);
+			model=new EIminimum(energyIFebruary,daysToFeb);
 
 		}else if (EIvalue.equals("minimum") &month==12){
-			model=new EIminimum(energyIFebruary,hoursToFeb);}
+			model=new EIminimum(energyIFebruary,daysToFeb);}
 
 		return model;
 

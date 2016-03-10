@@ -158,7 +158,7 @@ public class TestSnowMeltingPointCaseEI extends HMTestCase {
 
 		while( airTReader.doProcess  ) { 
 
-			snow.timeStep="Hourly";
+			snow.doHourly= true;
 			snow.model="Cazorzi";
 			snow.tStartDate=startDate;
 			snow.fStationsid="Field2";

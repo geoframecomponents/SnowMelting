@@ -198,6 +198,8 @@ public class SnowMeltingPointCaseSWRB extends JGTModel {
 
 	@Description(" The output SWE value")
 	double SWE;
+	
+	int step;
 
 	/**
 	 * Process.
@@ -207,20 +209,20 @@ public class SnowMeltingPointCaseSWRB extends JGTModel {
 	@Execute
 	public void process() throws Exception { 
 
-
+		
 		// computing the reference system of the input DEM
 		CoordinateReferenceSystem sourceCRS = inDem.getCoordinateReferenceSystem2D();
 
+		
 		//  from pixel coordinates (in coverage image) to geographic coordinates (in coverage CRS)
 		MathTransform transf = inDem.getGridGeometry().getCRSToGrid2D();
 
+		if (step==0){
 		skyview=mapsTransform(inSkyview);
-
-
 
 		// starting from the shp file containing the stations, get the coordinate
 		//of each station
-		stationCoordinates = getCoordinate(inStations, fStationsid);
+		stationCoordinates = getCoordinate(inStations, fStationsid);}
 
 		//create the set of the coordinate of the station, so we can 
 		//iterate over the set
@@ -268,6 +270,7 @@ public class SnowMeltingPointCaseSWRB extends JGTModel {
 
 		}
 
+		step++;
 	}
 
 	/**

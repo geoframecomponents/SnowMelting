@@ -102,11 +102,11 @@ public class SnowMeltingRasterCase extends JGTModel {
 	double shortwaveRadiation;
 
 
-	@Description("The timeStep allows to chose between the hourly time step"
+	@Description("doHourly allows to chose between the hourly time step"
 			+ " or the daily time step. It could be: "
-			+ " Hourly or Daily")
+			+ " Hourly--> true or Daily-->false")
 	@In
-	public String timeStep;
+    public boolean doHourly;
 
 	@Description("The map of the skyview factor.")
 	@In
@@ -252,7 +252,7 @@ public class SnowMeltingRasterCase extends JGTModel {
 		// otherwise it adds an hour, "step increments at the end of the process
 		// the actual date is needed to compute the actual energy index	
 		DateTime startDateTime = formatter.parseDateTime(tStartDate);
-		DateTime date=(timeStep.equals("Daily"))?startDateTime.plusDays(step):startDateTime.plusHours(step);
+		DateTime date=(doHourly==false)?startDateTime.plusDays(step):startDateTime.plusHours(step).plusMinutes(30);
 
 		// computing the reference system of the input DEM
 		CoordinateReferenceSystem sourceCRS = inDem.getCoordinateReferenceSystem2D();
@@ -313,7 +313,7 @@ public class SnowMeltingRasterCase extends JGTModel {
 				latitudeStation.add(Math.toRadians(idPoint[0].getY()));
 
 				// compute the energy index as in the previous case
-				EImode=SimpleEIFactory.createModel(timeStep, date, latitudeStation.get(k), c, r, 
+				EImode=SimpleEIFactory.createModel(doHourly, date, latitudeStation.get(k), c, r, 
 						energyIJanuary,energyIFebruary, energyIMarch,  energyIApril,energyIMay, energyIJune);
 
 				EIvalue=EImode.eiValues();

@@ -35,7 +35,7 @@ public class SimpleEIFactory {
 	private static double daysToMay = 151;
 	private static double daysToJune = 181;
 
-	public static EnergyIndex createModel(String type, DateTime date, double latitude, int i, int j, WritableRaster energyIJanuary,
+	public static EnergyIndex createModel(boolean doHourly, DateTime date, double latitude, int i, int j, WritableRaster energyIJanuary,
 			WritableRaster energyIFebruary, WritableRaster energyIMarch, WritableRaster energyIApril,
 			WritableRaster energyIMay, WritableRaster energyIJune){
 
@@ -62,7 +62,7 @@ public class SimpleEIFactory {
 
 		String EIvalue;
 
-		if ((hour>= (sunrise) && hour <= (sunset))|type.equals("Daily")) EIvalue="daily";
+		if ((hour>= (sunrise) && hour <= (sunset))|doHourly==false) EIvalue="daily";
 		else EIvalue="minimum";
 		
 

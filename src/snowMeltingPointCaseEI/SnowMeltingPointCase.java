@@ -103,11 +103,11 @@ public class SnowMeltingPointCase extends JGTModel {
 	@Description("The double value of the  temperature, once read from the HashMap")
 	double temperature;
 
-	@Description("The timeStep allows to chose between the hourly time step"
+	@Description("doHourly allows to chose between the hourly time step"
 			+ " or the daily time step. It could be: "
-			+ " Hourly or Daily")
+			+ " Hourly--> true or Daily-->false")
 	@In
-	public String timeStep;
+    public boolean doHourly;
 	
 	@Description("It is needed to iterate on the date")
 	int step;
@@ -254,7 +254,7 @@ public class SnowMeltingPointCase extends JGTModel {
 		// otherwise it adds an hour, "step increments at the end of the process
 		// the actual date is needed to compute the actual energy index	
 		DateTime startDateTime = formatter.parseDateTime(tStartDate);
-		DateTime date=(timeStep.equals("Daily"))?startDateTime.plusDays(step):startDateTime.plusHours(step);
+		DateTime date=(doHourly==false)?startDateTime.plusDays(step):startDateTime.plusHours(step).plusMinutes(30);
 
 		// computing the reference system of the input DEM
 		CoordinateReferenceSystem sourceCRS = inDem.getCoordinateReferenceSystem2D();
@@ -324,7 +324,7 @@ public class SnowMeltingPointCase extends JGTModel {
 			// if it is hourly, we have to distinguish between night and day. During night 
 			//the value is the minimum of the map, during the day is the value at the 
 			//given station position
-			EImode=SimpleEIFactory.createModel(timeStep, date, latitudeStation.get(i), 
+			EImode=SimpleEIFactory.createModel(doHourly, date, latitudeStation.get(i), 
 					columnStation.get(i), rowStation.get(i), energyIJanuary,
 					energyIFebruary, energyIMarch,  energyIApril,energyIMay, energyIJune);
 
