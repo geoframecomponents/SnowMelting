@@ -43,15 +43,15 @@ public class TestSnowMeltingPointCaseSWRB extends HMTestCase {
 	public TestSnowMeltingPointCaseSWRB() throws Exception {
 
 
-		String startDate = "2007-10-17 00:00" ;
-		String endDate = "2007-10-18 00:00";
+		String startDate = "1994-01-01 00:00" ;
+		String endDate = "1994-03-01 00:00";
 		int timeStepMinutes = 60;
 		String fId = "ID";
 
-		String inPathToRainfall ="resources/Input/rainfall.csv";
-		String inPathToSnowfall ="resources/Input/snowfall.csv";
-		String inPathToAirT ="resources/Input/Temperature.csv";
-		String inPathToSWRB ="resources/Input/DIRETTA.csv";
+		String inPathToRainfall ="/Users/marialaura/Desktop/output/Posina/rain.csv";
+		String inPathToSnowfall ="/Users/marialaura/Desktop/output/Posina/snow.csv";
+		String inPathToAirT ="/Users/marialaura/Desktop/data/Posina/Subbasin_kriging_temp.csv";
+		String inPathToSWRB ="/Users/marialaura/Desktop/output/Posina/DIRETTA.csv";
 
 
 		OmsTimeSeriesIteratorReader rainfallReader = getTimeseriesReader(inPathToRainfall, fId, startDate, endDate, timeStepMinutes);
@@ -62,14 +62,14 @@ public class TestSnowMeltingPointCaseSWRB extends HMTestCase {
 
 
 		OmsRasterReader demReader = new OmsRasterReader();
-		demReader.file = "resources/Input/dem.asc";
+		demReader.file = "/Users/marialaura/Desktop/data/Posina/dem_stazioni.asc";
 		demReader.fileNovalue = -9999.0;
 		demReader.geodataNovalue = Double.NaN;
 		demReader.process();
 		GridCoverage2D dem = demReader.outRaster;
 
 		OmsRasterReader skyViewReader = new OmsRasterReader();
-		skyViewReader.file = "resources/Input/sky.asc";
+		skyViewReader.file = "/Users/marialaura/Desktop/data/Posina/skystaz.asc";
 		skyViewReader.fileNovalue = -9999.0;
 		skyViewReader.geodataNovalue = Double.NaN;
 		skyViewReader.process();
@@ -78,12 +78,12 @@ public class TestSnowMeltingPointCaseSWRB extends HMTestCase {
 
 		
 		OmsShapefileFeatureReader stationsReader = new OmsShapefileFeatureReader();
-		stationsReader.file = "resources/Input/stations.shp";
+		stationsReader.file = "/Users/marialaura/Desktop/Posina2marialura/prova/centroid_netnum__8.shp";
 		stationsReader.readFeatureCollection();
 		SimpleFeatureCollection stationsFC = stationsReader.geodata;
 
-		String pathToSWE= "resources/Output/SWE_hourly_SWRB.csv";
-		String pathToMeltingDischarge= "resources/Output/Melting_Hourly_SWRB.csv";
+		String pathToSWE= "/Users/marialaura/Desktop/SWE_hourly_SWRB.csv";
+		String pathToMeltingDischarge= "/Users/marialaura/Desktop/Melting_Hourly_SWRB.csv";
 
 		OmsTimeSeriesIteratorWriter writerSWE = new OmsTimeSeriesIteratorWriter();
 		OmsTimeSeriesIteratorWriter writerMelting = new OmsTimeSeriesIteratorWriter();
@@ -104,17 +104,17 @@ public class TestSnowMeltingPointCaseSWRB extends HMTestCase {
 		snow.inSkyview = skyView;
 		snow.inDem = dem;
 		snow.inStations = stationsFC;
-		snow.fStationsid = "Field2";
+		snow.fStationsid = "netnum";
 
 		while( airTReader.doProcess  ) { 
 
-			snow.model="Cazorzi";
+			snow.model="Classical";
 			snow.tStartDate=startDate;
-			snow.combinedMeltingFactor=0.1813454712889037;
-			snow.freezingFactor=0.006000776959626719;
+			snow.combinedMeltingFactor=0.00856;
+			snow.freezingFactor=0.0367;
 			snow.radiationFactor=0.006000776959626719;
-			snow.alfa_l = 0.553150174200997571;
-			snow.meltingTemperature=-0.64798915634369553;
+			snow.alfa_l = 0.949;
+			snow.meltingTemperature=1.94;
 
 
 			airTReader.nextRecord();	

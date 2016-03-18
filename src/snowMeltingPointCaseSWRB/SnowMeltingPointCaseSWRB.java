@@ -40,6 +40,7 @@ import oms3.annotations.Name;
 import oms3.annotations.Out;
 import oms3.annotations.Status;
 import oms3.annotations.Unit;
+
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -58,6 +59,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
@@ -172,14 +174,9 @@ public class SnowMeltingPointCaseSWRB extends JGTModel {
 
 	SnowModel snowModel;
 
-	@Description("solid water value obtained from the soultion of the budget")
-	double solidWater;
 
 	@Description("liquid water value obtained from the soultion of the budget")
 	double liquidWater;
-
-	@Description("The maximum value of the liquid water")
-	double maxLiquidWater;
 
 	@Description("Integration interval")
 	double dt=1;
@@ -200,6 +197,9 @@ public class SnowMeltingPointCaseSWRB extends JGTModel {
 	double SWE;
 	
 	int step;
+	
+	HashMap<Integer, double[]>initialConditionSolidWater= new HashMap<Integer, double[]>();
+	HashMap<Integer, double[]> initialConditionLiquidWater= new HashMap<Integer, double[]>();
 
 	/**
 	 * Process.
@@ -231,6 +231,14 @@ public class SnowMeltingPointCaseSWRB extends JGTModel {
 
 		// trasform the list of idStation into an array
 		idStations= stationCoordinatesIdSet.toArray();
+		
+		if(step==0){
+			for (int i=0;i<idStations.length;i++){
+				initialConditionSolidWater.put(i,new double[]{0.0});
+				initialConditionLiquidWater.put(i,new double[]{0.0});
+			}
+			
+		}
 
 		// iterate over the list of the stations to detect their position in the
 		// map and their latitude
@@ -258,15 +266,26 @@ public class SnowMeltingPointCaseSWRB extends JGTModel {
 			// read the input data for the given station
 			temperature=inTemperatureValues.get(idStations[i])[0];
 			rainfall=inRainfallValues.get(idStations[i])[0];
+			if(rainfall<0)rainfall=0;
 			snowfall=inSnowfallValues.get(idStations[i])[0];
+			if(snowfall<0)snowfall=0;
 			shortwaveRadiation=inShortwaveRadiationValues.get(idStations[i])[0];
 
 			//read the input skyview for the given station position
 			skyviewValue=skyview.getSampleDouble(columnStation.get(i), rowStation.get(i), 0);
 
+			double freezing=(temperature<meltingTemperature)?computeFreezing():0;
+			double melting=(temperature>meltingTemperature)?computeMelting():0;
+			double solidWater=computeSolidWater(initialConditionSolidWater.get(i)[0],freezing, melting);
+			computeLiquidWater(initialConditionLiquidWater.get(i)[0], freezing, melting);
 
 			// compute the melting and the discharge and stores the results into Hashmap
-			storeResult_series((Integer)idStations[i],computeMeltingDischarge(), computeSWE());
+			storeResult_series((Integer)idStations[i],computeMeltingDischarge(solidWater), computeSWE(solidWater));
+			
+
+			
+			initialConditionSolidWater.put(i,new double[]{solidWater});
+			initialConditionLiquidWater.put(i,new double[]{liquidWater});
 
 		}
 
@@ -333,66 +352,21 @@ public class SnowMeltingPointCaseSWRB extends JGTModel {
 		return point;
 	}
 
+
 	/**
-	 * Compute the melting discharge according to the model chosen.
+	 * Compute the freezing.
 	 *
-	 * @return the double value of the melting discharge
+	 * @param freezingFactor the freezing factor
+	 * @param temperature the temperature
+	 * @param meltingTemperature the melting temperature
+	 * @return the double
 	 */
-	private double computeMeltingDischarge(){
-
-		// compute the snowmelt 
-		double melting=(temperature>meltingTemperature)?computeMelting(model,combinedMeltingFactor, temperature, 
-				meltingTemperature,skyviewValue,radiationFactor,shortwaveRadiation):0;
-
-		melting = Math.min(melting, SWE);
-
+	private double computeFreezing(){
 		// compute the freezing
-		double freezing=(temperature<meltingTemperature)?computeFreezing(freezingFactor, temperature,meltingTemperature):0;
-
-
-		// solve the differential equation for the solid water
-		solidWater=solidWater+ dt * (snowfall + freezing - melting);  
-		if (solidWater<0){ 
-			solidWater=0; 
-			melting=0;
-		}
-
-
-		// solve the differential equation for the liquid water
-		liquidWater=liquidWater+ dt * (rainfall - freezing + melting); 
-		if (liquidWater<0) liquidWater=0;
-
-		// compute the maximum value of the liquid water
-		maxLiquidWater = alfa_l * solidWater;
-
-		// compute the melting discharge
-		double melting_discharge=0;
-		if (liquidWater > maxLiquidWater) {
-			melting_discharge = liquidWater - maxLiquidWater;
-			liquidWater = maxLiquidWater;		
-		}
-
-
-		return melting_discharge;
+		return freezingFactor*(meltingTemperature-temperature);		
 	}
-
-
-	/**
-	 * Compute the snow water equivalent.
-	 *
-	 * @return the double value of the snow water equivalent
-	 */
-	private double computeSWE(){
-
-		SWE=solidWater+liquidWater;
-		return SWE;
-
-	}
-
-
-
-
-
+	
+	
 	/**
 	 * Compute the melting according to the model used.
 	 *
@@ -405,31 +379,67 @@ public class SnowMeltingPointCaseSWRB extends JGTModel {
 	 * @param shortwaveRadiation is the shortwave radiation
 	 * @return the double value of the snowmelt
 	 */
-	private double computeMelting(String model,double combinedMeltingFactor,double temperature,double meltingTemperature,
-			double skyviewValue,double radiationFactor,double shortwaveRadiation) {
-
+	
+	private double computeMelting(){
+		// compute the snowmelt 
+	
 		snowModel=SimpleModelFactory.createModel(model, combinedMeltingFactor, temperature, meltingTemperature, 
 				skyviewValue, radiationFactor, shortwaveRadiation);
-
-		return snowModel.snowValues();
+		
+		return Math.min(snowModel.snowValues(), SWE);				
 	}
+	
+	private double computeSolidWater(double initialConditionSolidWater, double freezing, double melting){
+		// solve the differential equation for the solid water
+		double solidWater=initialConditionSolidWater+ dt * (snowfall + freezing - melting);  
+		if (solidWater<0){ 
+			solidWater=0; 
+			melting=0;
+		}	
+		return solidWater;	
+	}
+	
+	
+	void computeLiquidWater(double initialConditionLiquidWater, double freezing, double melting){
+		// solve the differential equation for the liquid water
+		liquidWater=initialConditionLiquidWater+ dt * (rainfall - freezing + melting); 
+		if (liquidWater<0) liquidWater=0;	
 
+	}
+	
+	/**
+	 * Compute the melting discharge according to the model chosen.
+	 *
+	 * @return the double value of the melting discharge
+	 */
+	private double computeMeltingDischarge(double solidWater){
+		// compute the maximum value of the liquid water
+		double maxLiquidWater = alfa_l * solidWater;
+
+		
+		// compute the melting discharge
+		double melting_discharge=0;
+		if (liquidWater > maxLiquidWater) {
+			melting_discharge = liquidWater - maxLiquidWater;		
+		}
+	
+		liquidWater=Math.min(maxLiquidWater, liquidWater);
+		
+		return melting_discharge;
+	}
 
 
 	/**
-	 * Compute the freezing.
+	 * Compute the snow water equivalent.
 	 *
-	 * @param freezingFactor the freezing factor
-	 * @param temperature the temperature
-	 * @param meltingTemperature the melting temperature
-	 * @return the double
+	 * @return the double value of the snow water equivalent
 	 */
-	private double computeFreezing(double freezingFactor, double temperature,
-			double meltingTemperature) {
+	private double computeSWE(double solidWater){
 
-		return freezingFactor*(meltingTemperature-temperature);
+		SWE=solidWater+liquidWater;
+		return SWE;
+
 	}
-
 
 
 
