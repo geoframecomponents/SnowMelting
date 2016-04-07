@@ -29,8 +29,7 @@ import org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader;
 import org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter;
 import org.jgrasstools.hortonmachine.utils.HMTestCase;
 
-
-import snowMeltingPointCaseSWRB.SnowMeltingPointCaseSWRB;
+import snowMeltingPointCase.SnowMeltingPointCase;
 
 /**
  * Test the {@link Snow} module.
@@ -100,7 +99,7 @@ public class TestSnowMeltingPointCaseSWRB extends HMTestCase {
 		writerMelting.fileNovalue="-9999";
 
 
-		SnowMeltingPointCaseSWRB snow = new SnowMeltingPointCaseSWRB();
+		SnowMeltingPointCase snow = new SnowMeltingPointCase();
 		snow.inSkyview = skyView;
 		snow.inDem = dem;
 		snow.inStations = stationsFC;

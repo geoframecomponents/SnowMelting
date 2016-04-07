@@ -31,7 +31,8 @@ import org.jgrasstools.hortonmachine.utils.HMTestCase;
 
 
 
-import snowMeltingPointCaseEI.SnowMeltingPointCase;
+
+import snowMeltingPointCaseOLD.SnowMeltingPointCase;
 
 /**
  * Test the {@link Snow} module.
