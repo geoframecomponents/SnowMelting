@@ -267,11 +267,17 @@ public class SnowMeltingPointCase extends JGTModel {
 
 			// read the input data for the given station
 			temperature=inTemperatureValues.get(idStations[i])[0];
+			
 			rainfall=inRainfallValues.get(idStations[i])[0];
 			if(rainfall<0)rainfall=0;
+			
 			snowfall=inSnowfallValues.get(idStations[i])[0];
 			if(snowfall<0)snowfall=0;
+			
 			shortwaveRadiation=inShortwaveRadiationValues.get(idStations[i])[0];
+			
+			
+			EI= (model=="Cazorzi")?inEIValues.get(idStations[i])[0]:0;
 
 			//read the input skyview for the given station position
 			skyviewValue=skyview.getSampleDouble(columnStation.get(i), rowStation.get(i), 0);
