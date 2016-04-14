@@ -260,10 +260,6 @@ public class SnowMeltingPointCase extends JGTModel {
 			columnStation.add((int) gridPoint.getCoordinate()[0]);
 			rowStation.add((int) gridPoint.getCoordinate()[1]);
 
-			//reproject the map in WGS84 and compute the latitude
-			Point [] idPoint=getPoint(coordinate,sourceCRS, targetCRS);
-			latitudeStation.add(Math.toRadians(idPoint[0].getY()));
-
 
 			// read the input data for the given station
 			temperature=inTemperatureValues.get(idStations[i])[0];
