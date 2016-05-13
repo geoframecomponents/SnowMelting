@@ -38,8 +38,8 @@ public class SimpleModelFactory {
 		}else if (snowModel.equals("Cazorzi")){
 			model=new CazorziModel(combinedMeltingFactor, temperature,  meltingTemperature,EI,skyviewValue);
 
-		}else if (snowModel.equals("Hoock")){
-			model=new HoockModel(combinedMeltingFactor, radiationFactor, temperature, meltingTemperature,
+		}else if (snowModel.equals("Hock")){
+			model=new HockModel(combinedMeltingFactor, radiationFactor, temperature, meltingTemperature,
 					shortwaveRadiation, skyviewValue);
 
 		}

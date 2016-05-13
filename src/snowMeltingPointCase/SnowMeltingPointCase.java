@@ -140,7 +140,7 @@ public class SnowMeltingPointCase extends JGTModel {
 	public String tStartDate;
 
 	@Description("It is possibile to chose between 3 different models to compute the melting: "
-			+ " Classical; Cazorzi; Hoock")
+			+ " Classical; Cazorzi; Hock")
 	@In
 	public String model;
 

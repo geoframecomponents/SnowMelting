@@ -20,9 +20,9 @@ package snowMeltingPointCase;
 
 
 /**
- * The Class HoockModel.
+ * The Class HockModel.
  */
-public class HoockModel implements SnowModel{
+public class HockModel implements SnowModel{
 
 	/** The combined melting factor. */
 	double combinedMeltingFactor;
@@ -44,7 +44,7 @@ public class HoockModel implements SnowModel{
 
 
 	/**
-	 * Instantiates a new Hoock model.
+	 * Instantiates a new Hock model.
 	 *
 	 * @param combinedMeltingFactor is the combined melting factor
 	 * @param radiationFactor is the radiation factor
@@ -53,7 +53,7 @@ public class HoockModel implements SnowModel{
 	 * @param shortwave is the shortwave
 	 * @param skyview is the skyview
 	 */
-	public HoockModel(double combinedMeltingFactor, double radiationFactor, double temperature, double meltingTemperature,
+	public HockModel(double combinedMeltingFactor, double radiationFactor, double temperature, double meltingTemperature,
 			double shortwave, double skyview){
 		
 		this.combinedMeltingFactor=combinedMeltingFactor;
