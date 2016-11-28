@@ -1,0 +1,27 @@
+language: java
+jdk:
+- oraclejdk8
+before_cache:
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+before_deploy:
+- export GRADLE_BUILD_DIR="build/libs"
+- export TAG=$(git describe --abbrev=0 --tags)
+- export MOD_TAG=${TAG#"v"}
+- export RELEASE_PKG_FILE="${GRADLE_BUILD_DIR}/SnowMelting-${MOD_TAG}.jar"
+- echo "deploying $RELEASE_PKG_FILE to GitHub releases"
+- gradle -PprojVersion=$MOD_TAG build
+deploy:
+  provider: releases
+  api_key:
+    secure: hAFa6AR4UeFJxbkg8f9oCQC0xxgF0oVANweFMr5lhXs/7BtJkgK+KTBFUJHW0LPtkF/7vaFEoel4g2GHhgIVRoGFKIfssA+jTkmCcBKQrVebBHHxZ9mv1eIhqwo7Yf9mTVuYOydpDSfGZuAf1NG2yA3Gp6YFPw/wCdyHf8o53tsVp8UXJVzrY3Ome5xOi7Up7PxucpTJkFPULV5daZ/BvRdUkKLUiQGK18hp7JAXMAuAfzwwAy/tVGBjtj7iGys2/6jDTgngthNjw+mbmWE0HTapJGekqgyP5yAmZTDH8ix9j8a0sAtMP0/FN3Agev92BbJ7qlh9zeC3xVLFtaclaanhwNTv3gy5HeIbKAB63O7vPtpS73SOalmEwlmohtwQ8dWfTxvSEKj4KUwzEpLXZeW/OeKsZ156OXFNqmbajn/SD3+3zRLW/Oh3QBR6l/7hDo862/oBUWRpkNUYLnxX35XFWGZfT8mCFSrQktafSHXpC/3gcurASiUqGfOTS3hJrZV/18xQTGq1dnUlNwJKe7n70d78tIIMID334m9nmzl4As7Hos0wZQiXRC+2KUqQg1kzbrQKjNg3DrBjyC9HRQ1z2qWgXaFlC4wyRKgUXTEjLm7aZBCCpmCuJmHtcY2JUu4dLPEh2serD8jHOzNVhIDzE6os8pWh81VgRQx62ss=
+  file: "${RELEASE_PKG_FILE}"
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
+    repo: geoframecomponents/SnowMelting
