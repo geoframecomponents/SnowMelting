@@ -18,20 +18,42 @@
  */
 package snowMeltingRasterCase;
 
-import java.awt.image.WritableRaster;
 
+/**
+ * The Class HockModel.
+ */
+public class HockModel implements SnowModelRaster{
 
-public class HoockModel implements SnowModel{
-
+	/** The combined melting factor. */
 	double combinedMeltingFactor;
+	
+	/** The radiation factor. */
 	double radiationFactor;
+	
+	/** The temperature. */
 	double temperature; 
+	
+	/** The melting temperature. */
 	double meltingTemperature;
+	
+	/** The shortwave. */
 	double shortwave;
+	
+	/** The skyview. */
 	double skyview;
 
 
-	public HoockModel(double combinedMeltingFactor, double radiationFactor, double temperature, double meltingTemperature,
+	/**
+	 * Instantiates a new Hock model.
+	 *
+	 * @param combinedMeltingFactor is the combined melting factor
+	 * @param radiationFactor is the radiation factor
+	 * @param temperature is the temperature
+	 * @param meltingTemperature is the melting temperature
+	 * @param shortwave is the shortwave
+	 * @param skyview is the skyview
+	 */
+	public HockModel(double combinedMeltingFactor, double radiationFactor, double temperature, double meltingTemperature,
 			double shortwave, double skyview){
 		
 		this.combinedMeltingFactor=combinedMeltingFactor;
@@ -45,6 +67,9 @@ public class HoockModel implements SnowModel{
 
 
 
+	/* (non-Javadoc)
+	 * @see snowMeltingPointCase.SnowModel#snowValues()
+	 */
 	@Override
 	public double snowValues() {
 		return (combinedMeltingFactor+radiationFactor*shortwave)*(temperature-meltingTemperature)*skyview;

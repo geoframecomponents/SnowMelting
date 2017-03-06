@@ -18,16 +18,31 @@
  */
 package snowMeltingRasterCase;
 
-import java.awt.image.WritableRaster;
 
 
-public class ClassicalModel implements SnowModel{
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ClassicalModel.
+ */
+public class ClassicalModel implements SnowModelRaster{
 
+	/** The combined melting factor. */
 	double combinedMeltingFactor;
+	
+	/** The temperature. */
 	double temperature; 
+	
+	/** The melting temperature. */
 	double meltingTemperature;
 
 
+	/**
+	 * Instantiates a new classical model.
+	 *
+	 * @param combinedMeltingFactor is the combined melting factor
+	 * @param temperature is the temperature
+	 * @param meltingTemperature is the melting temperature
+	 */
 	public ClassicalModel(double combinedMeltingFactor, double temperature, double meltingTemperature){
 		
 		this.combinedMeltingFactor=combinedMeltingFactor;
@@ -38,6 +53,9 @@ public class ClassicalModel implements SnowModel{
 
 
 
+	/* (non-Javadoc)
+	 * @see snowMeltingPointCase.SnowModel#snowValues()
+	 */
 	@Override
 	public double snowValues() {
 		return combinedMeltingFactor * (temperature - meltingTemperature);

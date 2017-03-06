@@ -18,18 +18,38 @@
  */
 package snowMeltingRasterCase;
 
-import java.awt.image.WritableRaster;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CazorziModel.
+ */
+public class CazorziModel implements SnowModelRaster{
 
-public class CazorziModel implements SnowModel{
-
+	/** The combined melting factor. */
 	double combinedMeltingFactor;
+	
+	/** The temperature. */
 	double temperature; 
+	
+	/** The melting temperature. */
 	double meltingTemperature;
+	
+	/** The energy index. */
 	double EI;
+	
+	/** The skyview. */
 	double skyview;
 
 
+	/**
+	 * Instantiates a new cazorzi model.
+	 *
+	 * @param combinedMeltingFactor is the combined melting factor
+	 * @param temperature is the temperature
+	 * @param meltingTemperature is the melting temperature
+	 * @param EI is the energy index
+	 * @param skyview is the skyview
+	 */
 	public CazorziModel(double combinedMeltingFactor, double temperature, double meltingTemperature,
 			double EI, double skyview){
 		
@@ -43,6 +63,9 @@ public class CazorziModel implements SnowModel{
 
 
 
+	/* (non-Javadoc)
+	 * @see snowMeltingPointCase.SnowModel#snowValues()
+	 */
 	@Override
 	public double snowValues() {
 		return combinedMeltingFactor * (temperature - meltingTemperature)*EI*skyview;

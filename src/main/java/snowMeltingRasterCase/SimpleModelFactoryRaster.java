@@ -18,32 +18,28 @@
  */
 package snowMeltingRasterCase;
 
-import java.awt.image.WritableRaster;
-
-import org.joda.time.DateTime;
 
 // TODO: Auto-generated Javadoc
 /**
  * A simple design factory for creating Model objects.
  */
-public class SimpleModelFactory {
+public class SimpleModelFactoryRaster {
 	
 
-	public static SnowModel createModel(String snowModel,double combinedMeltingFactor,double temperature,
-			double meltingTemperature,double EIvalue,
-			double skyviewValue,double radiationFactor,double shortwaveRadiation ){
+	public static SnowModelRaster createModelRaster(String snowModel,double combinedMeltingFactor,double temperature,
+			double meltingTemperature,double skyviewValue,double radiationFactor,double shortwaveRadiation, double EI ){
 
-		SnowModel model=null;
+		SnowModelRaster model=null;
 
 		
 		if (snowModel.equals("Classical")){
 			model=new ClassicalModel(combinedMeltingFactor, temperature,  meltingTemperature);
 
 		}else if (snowModel.equals("Cazorzi")){
-			model=new CazorziModel(combinedMeltingFactor, temperature,  meltingTemperature,EIvalue,skyviewValue);
+			model=new CazorziModel(combinedMeltingFactor, temperature,  meltingTemperature,EI,skyviewValue);
 
-		}else if (snowModel.equals("Hoock")){
-			model=new HoockModel(combinedMeltingFactor, radiationFactor, temperature, meltingTemperature,
+		}else if (snowModel.equals("Hock")){
+			model=new HockModel(combinedMeltingFactor, radiationFactor, temperature, meltingTemperature,
 					shortwaveRadiation, skyviewValue);
 
 		}

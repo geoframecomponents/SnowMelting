@@ -43,6 +43,7 @@ import oms3.annotations.Name;
 import oms3.annotations.Out;
 import oms3.annotations.Status;
 import oms3.annotations.Unit;
+import snowMeltingPointCase.SimpleModelFactory;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -203,12 +204,13 @@ public class SnowMeltingRasterCase extends JGTModel {
 
 	@Description("It is needed to iterate on the date")
 	int step;
+	
+	SnowModelRaster snowModelRaster;
 
 	@Description("The energy index value")
 	double EIvalue;
 	EnergyIndex EImode;
 
-	SnowModel snowModel;
 
 	@Description("solid water value obtained from the soultion of the budget")
 	double solidWater;
@@ -218,6 +220,8 @@ public class SnowMeltingRasterCase extends JGTModel {
 
 	@Description("The maximum value of the liquid water")
 	double maxLiquidWater;
+	
+	double melting;
 
 	@Description("Integration interval")
 	double dt=1;
@@ -267,6 +271,9 @@ public class SnowMeltingRasterCase extends JGTModel {
 			energyIApril=mapsReader(inInsApr);
 			energyIMay=mapsReader(inInsMay);
 			energyIJune=mapsReader(inInsJun);
+			
+			solidWater=0;
+			liquidWater=0;
 		}
 
 
@@ -317,13 +324,24 @@ public class SnowMeltingRasterCase extends JGTModel {
 						energyIJanuary,energyIFebruary, energyIMarch,  energyIApril,energyIMay, energyIJune);
 
 				EIvalue=EImode.eiValues();
+				
+				
+				double freezing=(temperature<meltingTemperature)?computeFreezing():0;
+				
+				 melting=(temperature>meltingTemperature)?computeMelting():0;
+				 
+				solidWater=computeSolidWater(solidWater,freezing);
+				computeLiquidWater(liquidWater, freezing, melting);
 
 
-				MeltingIter.setSample(c, r, 0, computeMeltingDischarge());
-				SWEIter.setSample(c, r, 0, computeSWE());
+
+				MeltingIter.setSample(c, r, 0, computeMeltingDischarge(solidWater));
+				SWEIter.setSample(c, r, 0, computeSWE(solidWater));
 
 				// the index k is for the loop over the list
 				k++;
+				
+				
 
 			}
 		}
@@ -391,59 +409,6 @@ public class SnowMeltingRasterCase extends JGTModel {
 	}
 
 
-
-	/**
-	 * Compute melting discharge, according to the model chosen.
-	 *
-	 * @return the double value of the melting discharge
-	 */
-	private double computeMeltingDischarge(){	
-
-		// compute the snowmelt 
-		double melting=(temperature>meltingTemperature)?computeMelting(model,combinedMeltingFactor, temperature, 
-				meltingTemperature, EIvalue,skyviewValue,radiationFactor,shortwaveRadiation):0;
-
-		melting = Math.min(melting, SWE);
-
-		// compute the freezing
-		double freezing=(temperature<meltingTemperature)?computeFrizing(freezingFactor, temperature,meltingTemperature):0;
-
-
-		// solve the differential equation for the solid water
-		solidWater=solidWater+ dt * (snowfall + freezing - melting);  
-		if (solidWater<0){ 
-			solidWater=0; 
-			melting=0;
-		}
-
-		// solve the differential equation for the liquid water
-		liquidWater=liquidWater+ dt * (rainfall - freezing + melting); 
-		if (liquidWater<0) liquidWater=0;
-
-		// compute the maximum value of the liquid water
-		maxLiquidWater = alfa_l * solidWater;
-
-		// compute the melting discharge
-		double melting_discharge=0;
-		if (liquidWater > maxLiquidWater) {
-			melting_discharge = liquidWater - maxLiquidWater;
-			liquidWater = maxLiquidWater;		
-		}
-
-		return melting_discharge;
-	}
-
-
-	/**
-	 * Compute Snow Water Equivalent.
-	 *
-	 * @return the double value of the SWE
-	 */
-	private double computeSWE(){
-		SWE=solidWater+liquidWater;
-		return SWE;
-	}
-
 	/**
 	 * Gets the point.
 	 *
@@ -463,30 +428,6 @@ public class SnowMeltingRasterCase extends JGTModel {
 
 
 	/**
-	 * Compute the melting according to the model used.
-	 *
-	 * @param model is the string containing the name of the model chosen 
-	 * @param combinedMeltingFactor is the combined melting factor
-	 * @param temperature is the input temperature
-	 * @param meltingTemperature is the melting temperature
-	 * @param EIvalue is the energy index value
-	 * @param skyviewValue is the the skyview factor value
-	 * @param radiationFactor is the radiation factor
-	 * @param shortwaveRadiation is the shortwave radiation
-	 * @return the double value of the snowmelt
-	 */
-	private double computeMelting(String model,double combinedMeltingFactor,double temperature,double meltingTemperature,double EIvalue,
-			double skyviewValue,double radiationFactor,double shortwaveRadiation) {
-
-		snowModel=SimpleModelFactory.createModel(model, combinedMeltingFactor, temperature, meltingTemperature, 
-				EIvalue, skyviewValue, radiationFactor, shortwaveRadiation);
-
-		return snowModel.snowValues();
-	}
-
-
-
-	/**
 	 * Compute the freezing.
 	 *
 	 * @param freezingFactor the freezing factor
@@ -494,12 +435,81 @@ public class SnowMeltingRasterCase extends JGTModel {
 	 * @param meltingTemperature the melting temperature
 	 * @return the double
 	 */
-	private double computeFrizing(double freezingFactor, double temperature,
-			double meltingTemperature) {
-
-		return freezingFactor*(meltingTemperature-temperature);
+	private double computeFreezing(){
+		// compute the freezing
+		return freezingFactor*(meltingTemperature-temperature);		
 	}
 
+
+	/**
+	 * Compute the melting according to the model used.
+	 *
+	 * @param model is the string containing the name of the model chosen 
+	 * @param combinedMeltingFactor is the combined melting factor
+	 * @param temperature is the input temperature
+	 * @param meltingTemperature is the melting temperature
+	 * @param skyviewValue is the the skyview factor value
+	 * @param radiationFactor is the radiation factor
+	 * @param shortwaveRadiation is the shortwave radiation
+	 * @return the double value of the snowmelt
+	 */
+
+	private double computeMelting(){
+		// compute the snowmelt 
+		snowModelRaster=SimpleModelFactoryRaster.createModelRaster(model, combinedMeltingFactor, temperature, meltingTemperature, skyviewValue, radiationFactor, shortwaveRadiation, EIvalue);
+		return snowModelRaster.snowValues();
+	}
+
+	private double computeSolidWater(double initialConditionSolidWater, double freezing){
+		// solve the differential equation for the solid water
+		double solidWater=initialConditionSolidWater+ dt * (snowfall + freezing - melting);  
+		if (solidWater<0){ 
+			solidWater=0; 
+			melting=0;
+		}	
+		return solidWater;	
+	}
+
+
+	void computeLiquidWater(double initialConditionLiquidWater, double freezing, double melting){
+		// solve the differential equation for the liquid water
+		liquidWater=initialConditionLiquidWater+ dt * (rainfall - freezing + melting); 
+		if (liquidWater<0) liquidWater=0;	
+
+	}
+
+	/**
+	 * Compute the melting discharge according to the model chosen.
+	 *
+	 * @return the double value of the melting discharge
+	 */
+	private double computeMeltingDischarge(double solidWater){
+		// compute the maximum value of the liquid water
+		double maxLiquidWater = alfa_l * solidWater;
+
+
+		// compute the melting discharge
+		double melting_discharge=0;
+		if (liquidWater > maxLiquidWater) {
+			melting_discharge = liquidWater - maxLiquidWater;
+			liquidWater = maxLiquidWater;		
+		}
+
+		return melting_discharge;
+	}
+
+
+	/**
+	 * Compute the snow water equivalent.
+	 *
+	 * @return the double value of the snow water equivalent
+	 */
+	private double computeSWE(double solidWater){
+
+		SWE=solidWater+liquidWater;
+		return SWE;
+
+	}
 
 
 

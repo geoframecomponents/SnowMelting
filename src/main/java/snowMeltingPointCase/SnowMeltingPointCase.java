@@ -283,7 +283,9 @@ public class SnowMeltingPointCase extends JGTModel {
 			skyviewValue=skyview.getSampleDouble(columnStation.get(i), rowStation.get(i), 0);
 
 			double freezing=(temperature<meltingTemperature)?computeFreezing():0;
+			
 			 melting=(temperature>meltingTemperature)?computeMelting():0;
+			 
 			double solidWater=computeSolidWater(initialConditionSolidWater.get(i)[0],freezing);
 			computeLiquidWater(initialConditionLiquidWater.get(i)[0], freezing, melting);
 
@@ -341,23 +343,6 @@ public class SnowMeltingPointCase extends JGTModel {
 
 		return id2CoordinatesMap;
 
-	}
-
-
-	/**
-	 * Gets the point coordinates (row and column) of the station, after its reprojection in WGS84.
-	 *
-	 * @param coordinate is the coordinate of the point in the original reference system
-	 * @param sourceCRS the original reference system
-	 * @param targetCRS is the WGS84 system
-	 * @return the point vector with the x and y values of its position
-	 * @throws Exception 
-	 */
-	private Point[] getPoint(Coordinate coordinate, CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem targetCRS)
-			throws Exception{
-		Point[] point = new Point[] { GeometryUtilities.gf().createPoint(coordinate) };
-		CrsUtilities.reproject(sourceCRS, targetCRS, point);
-		return point;
 	}
 
 
@@ -430,10 +415,9 @@ public class SnowMeltingPointCase extends JGTModel {
 		// compute the melting discharge
 		double melting_discharge=0;
 		if (liquidWater > maxLiquidWater) {
-			melting_discharge = liquidWater - maxLiquidWater;		
+			melting_discharge = liquidWater - maxLiquidWater;
+			liquidWater = maxLiquidWater;		
 		}
-
-		liquidWater=Math.min(maxLiquidWater, liquidWater);
 
 		return melting_discharge;
 	}
