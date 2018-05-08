@@ -234,6 +234,8 @@ public class SnowMeltingPointCase extends JGTModel {
 		//iterate over the set
 		Set<Integer> stationCoordinatesIdSet = stationCoordinates.keySet();
 		Iterator<Integer> idIterator = stationCoordinatesIdSet.iterator();
+		
+		
 
 		// trasform the list of idStation into an array
 		idStations= stationCoordinatesIdSet.toArray();
@@ -270,6 +272,8 @@ public class SnowMeltingPointCase extends JGTModel {
 			
 			rainfall=inRainfallValues.get(idStations[i])[0];
 			if(isNovalue(rainfall)|rainfall<0)rainfall=0;
+			
+			//System.out.println(rainfall+"snow");
 			
 			snowfall=inSnowfallValues.get(idStations[i])[0];
 			if(isNovalue(snowfall)|snowfall<0)snowfall=0;
