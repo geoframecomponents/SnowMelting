@@ -66,7 +66,7 @@ import com.vividsolutions.jts.geom.Point;
 @Description("The component computes the snow water equivalent and the melting discharge with"
 		+ "punctual data. The inputs of the components are the rainfall,"
 		+ "the shortwave, the temperature values, the skyview, the energy index and the DEM maps")
-@Author(name = "Marialaura Bancheri & Giuseppe Formetta", contact = "maryban@hotmail.it")
+@Author(name = "Marialaura Bancheri, Giuseppe Formetta, Niccolò Tubini", contact = "maryban@hotmail.it")
 @Keywords("Hydrology, Snow Model")
 @Label(JGTConstants.HYDROGEOMORPHOLOGY)
 @Name("Snow")
@@ -79,36 +79,41 @@ public class SnowMeltingPointCase extends JGTModel {
 	public HashMap<Integer, double[]> inRainfallValues;
 
 	@Description("The double value of the , once read from the HashMap")
-	double rainfall;
+	private double rainfall;
 
 	@Description("The Hashmap with the time series of the snowfall values")
 	@In
 	public HashMap<Integer, double[]> inSnowfallValues;
 
 	@Description("The double value of the snowfall, once read from the HashMap")
-	double snowfall;
+	private double snowfall;
 
 	@Description("The Hashmap with the time series of the SWRB values")
 	@In
 	public HashMap<Integer, double[]> inShortwaveRadiationValues;
 
 	@Description("The double value of the  shortwave radiation, once read from the HashMap")
-	double shortwaveRadiation;
+	private double shortwaveRadiation;
 
 	@Description("The Hashmap with the time series of the EI values")
 	@In
+	@Unit("E / (C day)")
 	public HashMap<Integer, double[]> inEIValues;
 
 	@Description("The double value of the  EI, once read from the HashMap")
-	double EI;
+	private double EI;
 
 
 	@Description("The Hashmap with the time series of the temperature values")
 	@In
 	public HashMap<Integer, double[]> inTemperatureValues;
+	
+	@Description("The time step in minutes")
+	@In
+	public double timeStepMinutes;
 
 	@Description("The double value of the  temperature, once read from the HashMap")
-	double temperature;
+	private double temperature;
 
 
 	@Description("The map of the skyview factor.")
@@ -117,7 +122,7 @@ public class SnowMeltingPointCase extends JGTModel {
 	WritableRaster skyview;
 
 	@Description("the skyview factor value, read from the map")
-	double skyviewValue;
+	private double skyviewValue;
 
 	@Description("The digital elevation model.")
 	@In
@@ -132,10 +137,10 @@ public class SnowMeltingPointCase extends JGTModel {
 	public String fStationsid;
 
 	@Description(" The vetor containing the id of the station")
-	Object []idStations;
+	private Object []idStations;
 
 	@Description("the linked HashMap with the coordinate of the stations")
-	LinkedHashMap<Integer, Coordinate> stationCoordinates;
+	private LinkedHashMap<Integer, Coordinate> stationCoordinates;
 
 	@Description("The first day of the simulation.")
 	@In
@@ -153,44 +158,48 @@ public class SnowMeltingPointCase extends JGTModel {
 
 	@Description("Combined melting factor")
 	@In
+	@Unit("mm / (C day)")
 	public double combinedMeltingFactor;
 
 	@Description("Radiation factor")
 	@In
+	@Unit("mm / (C E day)")
 	public double radiationFactor;
 
 	@Description("Freezing factor")
 	@In
+	@Unit("mm / (C day)")
 	public double freezingFactor;
 
 	@Description("Alfa_l is the coefficient for the computation of the maximum liquid water")
 	@In
+	@Unit("-")
 	public double alfa_l;
-
+	
 	@Description("List of the indeces of the columns of the station in the map")
-	ArrayList <Integer> columnStation= new ArrayList <Integer>();
+	private ArrayList <Integer> columnStation= new ArrayList <Integer>();
 
 	@Description("List of the indeces of the rows of the station in the map")
-	ArrayList <Integer> rowStation= new ArrayList <Integer>();
+	private ArrayList <Integer> rowStation= new ArrayList <Integer>();
 
 	@Description("List of the latitudes of the station ")
-	ArrayList <Double> latitudeStation= new ArrayList <Double>();
+	private ArrayList <Double> latitudeStation= new ArrayList <Double>();
 
 
-	SnowModel snowModel;
+	private SnowModel snowModel;
 
 
-	@Description("liquid water value obtained from the soultion of the budget")
-	double liquidWater;
+//	@Description("liquid water value obtained from the soultion of the budget")
+	private double liquidWater;
 	
-	double melting;
+	private double melting;
 
-	@Description("Integration interval")
-	double dt=1;
+//	@Description("Integration interval")
+//	private double dt=1;
 
 
 	@Description("Final target CRS")
-	CoordinateReferenceSystem targetCRS = DefaultGeographicCRS.WGS84;
+	private CoordinateReferenceSystem targetCRS = DefaultGeographicCRS.WGS84;
 
 	@Description(" The output melting discharge HashMap")
 	@Out
@@ -200,14 +209,21 @@ public class SnowMeltingPointCase extends JGTModel {
 	@Out
 	public HashMap<Integer, double[]> outSWEHM= new HashMap<Integer, double[]>();;
 
-	@Description(" The output SWE value")
-	double SWE;
 
-	int step;
+	private int step;
 
-	HashMap<Integer, double[]>initialConditionSolidWater= new HashMap<Integer, double[]>();
-	HashMap<Integer, double[]> initialConditionLiquidWater= new HashMap<Integer, double[]>();
+	private HashMap<Integer, double[]>initialConditionSolidWater= new HashMap<Integer, double[]>();
+	private HashMap<Integer, double[]> initialConditionLiquidWater= new HashMap<Integer, double[]>();
 
+	private Coordinate coordinate;
+	private DirectPosition point;
+	private DirectPosition gridPoint;
+	private double freezing;
+	private double solidWater;
+	private double melting_discharge;
+	private double swe;
+	private Set<Integer> stationCoordinatesIdSet;
+	private Iterator<Integer> idIterator;
 	/**
 	 * Process.
 	 *
@@ -224,43 +240,58 @@ public class SnowMeltingPointCase extends JGTModel {
 		MathTransform transf = inDem.getGridGeometry().getCRSToGrid2D();
 
 		if (step==0){
-			skyview=mapsTransform(inSkyview);
+			
+			skyview = mapsTransform(inSkyview);
 
 			// starting from the shp file containing the stations, get the coordinate
 			//of each station
-			stationCoordinates = getCoordinate(inStations, fStationsid);}
+			stationCoordinates = getCoordinate(inStations, fStationsid);
 
-		//create the set of the coordinate of the station, so we can 
-		//iterate over the set
-		Set<Integer> stationCoordinatesIdSet = stationCoordinates.keySet();
-		Iterator<Integer> idIterator = stationCoordinatesIdSet.iterator();
-		
-		
+			//create the set of the coordinate of the station, so we can 
+			//iterate over the set
+			stationCoordinatesIdSet = stationCoordinates.keySet();
+			idIterator = stationCoordinatesIdSet.iterator();
+			
+			
 
-		// trasform the list of idStation into an array
-		idStations= stationCoordinatesIdSet.toArray();
-
-		if(step==0){
+			// trasform the list of idStation into an array
+			idStations= stationCoordinatesIdSet.toArray();
+			
+			
 			for (int i=0;i<idStations.length;i++){
 				initialConditionSolidWater.put(i,new double[]{0.0});
 				initialConditionLiquidWater.put(i,new double[]{0.0});
 			}
+			
+			
 
+			
+	
 		}
+		
+		freezingFactor = freezingFactor/1440*timeStepMinutes;
+		radiationFactor = radiationFactor/60*timeStepMinutes;
+		combinedMeltingFactor = combinedMeltingFactor/1440*timeStepMinutes;
+
+
 
 		// iterate over the list of the stations to detect their position in the
 		// map and their latitude
 		// iterate over the list of the stations
 		for (int i=0;i<idStations.length;i++){
-
+//			System.out.println("IC SoildWater :" +initialConditionSolidWater.get(i)[0]);
+//			System.out.println("IC LiquidWater :" +initialConditionLiquidWater.get(i)[0]);
+						
 			// compute the coordinate of the station from the linked hashMap
-			Coordinate coordinate = (Coordinate) stationCoordinates.get(idIterator.next());
+			idIterator = stationCoordinatesIdSet.iterator();
+
+			coordinate = (Coordinate) stationCoordinates.get(idIterator.next());
 
 			// define the position, according to the CRS, of the station in the map
-			DirectPosition point = new DirectPosition2D(sourceCRS, coordinate.x, coordinate.y);
+			point = new DirectPosition2D(sourceCRS, coordinate.x, coordinate.y);
 
 			// trasform the position in two the indices of row and column 
-			DirectPosition gridPoint = transf.transform(point, null);
+			gridPoint = transf.transform(point, null);
 
 			// add the indices to a list
 			columnStation.add((int) gridPoint.getCoordinate()[0]);
@@ -268,38 +299,41 @@ public class SnowMeltingPointCase extends JGTModel {
 
 
 			// read the input data for the given station
-			temperature=inTemperatureValues.get(idStations[i])[0];
+			temperature = inTemperatureValues.get(idStations[i])[0];
 			
-			rainfall=inRainfallValues.get(idStations[i])[0];
+			rainfall = inRainfallValues.get(idStations[i])[0];
 			if(isNovalue(rainfall)|rainfall<0)rainfall=0;
+
 			
-			//System.out.println(rainfall+"snow");
-			
-			snowfall=inSnowfallValues.get(idStations[i])[0];
+			snowfall = inSnowfallValues.get(idStations[i])[0];
 			if(isNovalue(snowfall)|snowfall<0)snowfall=0;
 			
-			shortwaveRadiation=inShortwaveRadiationValues.get(idStations[i])[0];
+//			shortwaveRadiation = inShortwaveRadiationValues.get(idStations[i])[0] * timeStepMinutes*60;
 			
+			shortwaveRadiation = (model!="Classical")?inShortwaveRadiationValues.get(idStations[i])[0] * timeStepMinutes*60:0;
 			
-			EI= (model=="Cazorzi")?inEIValues.get(idStations[i])[0]:0;
+			EI = (model=="Cazorzi")?inEIValues.get(idStations[i])[0]:0;
 
 			//read the input skyview for the given station position
 			skyviewValue=skyview.getSampleDouble(columnStation.get(i), rowStation.get(i), 0);
 
-			double freezing=(temperature<meltingTemperature)?computeFreezing():0;
+			freezing=(temperature<meltingTemperature)?computeFreezing(initialConditionLiquidWater.get(i)[0]):0;
 			
-			 melting=(temperature>meltingTemperature)?computeMelting():0;
-			 
-			double solidWater=computeSolidWater(initialConditionSolidWater.get(i)[0],freezing);
-			computeLiquidWater(initialConditionLiquidWater.get(i)[0], freezing, melting);
-
+			melting=(temperature>meltingTemperature)?computeMelting():0;
+			solidWater=computeSolidWater(initialConditionSolidWater.get(i)[0]);//,freezing);
+			liquidWater = computeLiquidWater(initialConditionLiquidWater.get(i)[0]);//, freezing, melting);
+			melting_discharge =computeMeltingDischarge();
+			swe = computeSWE();
 			// compute the melting and the discharge and stores the results into Hashmap
-			storeResult_series((Integer)idStations[i],computeMeltingDischarge(solidWater), computeSWE(solidWater));
+			storeResult_series((Integer)idStations[i],melting_discharge, swe);
 
+			
 
 
 			initialConditionSolidWater.put(i,new double[]{solidWater});
 			initialConditionLiquidWater.put(i,new double[]{liquidWater});
+			
+//			System.out.println(snowfall +"\t"+ rainfall +"\t"+ solidWater +"\t"+ liquidWater +"\t"+ swe +"\t"+ freezing +"\t"+ melting +"\t"+ melting_discharge);
 
 		}
 
@@ -358,9 +392,13 @@ public class SnowMeltingPointCase extends JGTModel {
 	 * @param meltingTemperature the melting temperature
 	 * @return the double
 	 */
-	private double computeFreezing(){
-		// compute the freezing
-		return freezingFactor*(meltingTemperature-temperature);		
+	private double computeFreezing(double initialConditionLiquidWater){
+
+		if(initialConditionLiquidWater<=0.0) {
+			return 0; 	
+		} else {
+			return freezingFactor*(meltingTemperature-temperature);		
+		}
 	}
 
 
@@ -378,32 +416,33 @@ public class SnowMeltingPointCase extends JGTModel {
 	 */
 
 	private double computeMelting(){
-		// compute the snowmelt 
 
 		snowModel=SimpleModelFactory.createModel(model, combinedMeltingFactor, temperature, meltingTemperature, 
 				skyviewValue, radiationFactor, shortwaveRadiation,EI);
 		
 		return snowModel.snowValues();
 
-		//return Math.min(snowModel.snowValues(), SWE);				
 	}
 
-	private double computeSolidWater(double initialConditionSolidWater, double freezing){
-		// solve the differential equation for the solid water
-		double solidWater=initialConditionSolidWater+ dt * (snowfall + freezing - melting);  
+	private double computeSolidWater(double initialConditionSolidWater){
+
+		double solidWater=initialConditionSolidWater+ (snowfall + freezing - melting);  
 		if (solidWater<0){ 
 			solidWater=0; 
-			melting=0;
-		}	
-		return solidWater;	
+			melting=initialConditionSolidWater+ (snowfall + freezing);
+		}
+
+
+		return solidWater;
 	}
 
 
-	void computeLiquidWater(double initialConditionLiquidWater, double freezing, double melting){
+	private double computeLiquidWater(double initialConditionLiquidWater){
 		// solve the differential equation for the liquid water
-		liquidWater=initialConditionLiquidWater+ dt * (rainfall - freezing + melting); 
-		if (liquidWater<0) liquidWater=0;	
 
+		double liquidWater=initialConditionLiquidWater+ (rainfall - freezing + melting); 
+		if (liquidWater<0) liquidWater=0;
+		return liquidWater;
 	}
 
 	/**
@@ -411,10 +450,9 @@ public class SnowMeltingPointCase extends JGTModel {
 	 *
 	 * @return the double value of the melting discharge
 	 */
-	private double computeMeltingDischarge(double solidWater){
+	private double computeMeltingDischarge(){
 		// compute the maximum value of the liquid water
 		double maxLiquidWater = alfa_l * solidWater;
-
 
 		// compute the melting discharge
 		double melting_discharge=0;
@@ -432,9 +470,9 @@ public class SnowMeltingPointCase extends JGTModel {
 	 *
 	 * @return the double value of the snow water equivalent
 	 */
-	private double computeSWE(double solidWater){
+	private double computeSWE(){
 
-		SWE=solidWater+liquidWater;
+		double SWE = solidWater+liquidWater;
 		return SWE;
 
 	}
@@ -449,7 +487,7 @@ public class SnowMeltingPointCase extends JGTModel {
 	 * @param SWE is the snow water equivalent
 	 * @throws SchemaException 
 	 */
-	private void storeResult_series(Integer ID,double meltingDischarge , double SWE) throws SchemaException {
+	private void storeResult_series(Integer ID, double meltingDischarge, double SWE) throws SchemaException {
 
 
 		outSWEHM.put(ID, new double[]{SWE});
