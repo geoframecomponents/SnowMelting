@@ -42,8 +42,8 @@ public class TestSnowMeltingPointCaseHock_1h {
 	public void Test() throws Exception {
 
 
-		String startDate = "2013-11-01 00:00";
-		String endDate = "2013-11-02 00:00";
+		String startDate = "2013-11-01 07:00";
+		String endDate = "2013-11-30 00:00";
 		int timeStepMinutes = 60;
 		String fId = "ID";
 
@@ -110,9 +110,9 @@ public class TestSnowMeltingPointCaseHock_1h {
 
 			snow.model="Hock";
 			snow.tStartDate=startDate;
-			snow.combinedMeltingFactor=0.0955102*24;
-			snow.freezingFactor=0.0089217*24;
-			snow.radiationFactor=0.000061*24;
+			snow.combinedMeltingFactor=0.0955102;
+			snow.freezingFactor=0.0089217;
+			snow.radiationFactor=0.0001;
 			snow.alfa_l = 0.3504315;
 			snow.meltingTemperature=0;
 			snow.timeStepMinutes = 60;
@@ -124,7 +124,7 @@ public class TestSnowMeltingPointCaseHock_1h {
 
 			String date = airTReader.tCurrent;
 
-			
+			System.out.println("\n"+airTReader.tCurrent);
 			rainfallReader.nextRecord();
 			id2ValueMap = rainfallReader.outData;
 			snow.inRainfallValues = id2ValueMap;

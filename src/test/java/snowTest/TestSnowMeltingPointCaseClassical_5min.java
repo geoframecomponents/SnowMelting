@@ -106,8 +106,8 @@ public class TestSnowMeltingPointCaseClassical_5min {
 
 			snow.model="Classical";
 			snow.tStartDate=startDate;
-			snow.combinedMeltingFactor=0.0955102*24;
-			snow.freezingFactor=0.008921*24;
+			snow.combinedMeltingFactor=0.55102*24;
+			snow.freezingFactor=0.08921*24;
 			snow.radiationFactor=-9999;
 			snow.alfa_l = 0.3504315;
 			snow.meltingTemperature=0;
