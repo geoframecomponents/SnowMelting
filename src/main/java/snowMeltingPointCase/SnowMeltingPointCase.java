@@ -270,7 +270,7 @@ public class SnowMeltingPointCase extends JGTModel {
 		}
 		
 		freezingFactor = freezingFactor/1440*timeStepMinutes;
-		radiationFactor = radiationFactor/60*timeStepMinutes;
+		radiationFactor = radiationFactor/1440*timeStepMinutes;
 		combinedMeltingFactor = combinedMeltingFactor/1440*timeStepMinutes;
 
 
@@ -310,7 +310,7 @@ public class SnowMeltingPointCase extends JGTModel {
 			
 //			shortwaveRadiation = inShortwaveRadiationValues.get(idStations[i])[0] * timeStepMinutes*60;
 			
-			shortwaveRadiation = (model!="Classical")?inShortwaveRadiationValues.get(idStations[i])[0] * timeStepMinutes*60:0;
+			shortwaveRadiation = (model!="Classical")?inShortwaveRadiationValues.get(idStations[i])[0]:0;// * timeStepMinutes*60:0;
 			
 			EI = (model=="Cazorzi")?inEIValues.get(idStations[i])[0]:0;
 
