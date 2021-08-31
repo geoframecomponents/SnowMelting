@@ -120,10 +120,6 @@ public class TestSnowMeltingPointCaseClassical_1h {
 			HashMap<Integer, double[]> id2ValueMap = airTReader.outData;
 			snow.inTemperatureValues= id2ValueMap;
 
-			String date = airTReader.tCurrent;
-			if(airTReader.tCurrent.contentEquals("2013-11-01 00:00")){
-				System.out.println( airTReader.tCurrent);
-			}
 			
 			rainfallReader.nextRecord();
 			id2ValueMap = rainfallReader.outData;

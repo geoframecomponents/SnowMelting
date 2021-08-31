@@ -61,7 +61,7 @@ public class TestSnowMeltingPointCaseHock_1h {
 
 		
 		OmsShapefileFeatureReader stationsReader = new OmsShapefileFeatureReader();
-		stationsReader.file = "resources/Input/centroide_10.shp";
+		stationsReader.file =  "resources/Input/centroide_10.shp";
 		stationsReader.readFeatureCollection();
 		SimpleFeatureCollection stationsFC = stationsReader.geodata;
 
@@ -79,7 +79,7 @@ public class TestSnowMeltingPointCaseHock_1h {
 		OmsTimeSeriesIteratorWriter writerErrorSWE= new OmsTimeSeriesIteratorWriter();
 		
 		OmsRasterReader skyViewReader = new OmsRasterReader();
-		skyViewReader.file = "resources/myinput/sky_10.asc";
+		skyViewReader.file = "resources/Input/sky_10.asc";
 		skyViewReader.fileNovalue = -9999.0;
 		skyViewReader.geodataNovalue = Double.NaN;
 		skyViewReader.process();

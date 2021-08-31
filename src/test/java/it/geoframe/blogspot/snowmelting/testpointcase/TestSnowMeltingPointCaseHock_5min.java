@@ -80,7 +80,7 @@ public class TestSnowMeltingPointCaseHock_5min {
 		OmsTimeSeriesIteratorWriter writerErrorSWE= new OmsTimeSeriesIteratorWriter();
 		
 		OmsRasterReader skyViewReader = new OmsRasterReader();
-		skyViewReader.file = "resources/myinput/sky_10.asc";
+		skyViewReader.file = "resources/Input/sky_10.asc";
 		skyViewReader.fileNovalue = -9999.0;
 		skyViewReader.geodataNovalue = Double.NaN;
 		skyViewReader.process();
