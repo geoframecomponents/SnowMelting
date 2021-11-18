@@ -147,6 +147,14 @@ public class SnowMeltingPointCaseDegreeDay {
 	@Description(" The error for the swe HashMap")
 	@Out
 	public HashMap<Integer, double[]> outErrorSWEHM= new HashMap<Integer, double[]>();
+	
+	@Description(" The freezing flux HashMap")
+	@Out
+	public HashMap<Integer, double[]> outFreezing= new HashMap<Integer, double[]>();
+	
+	@Description(" The melting flux HashMap")
+	@Out
+	public HashMap<Integer, double[]> outMelting= new HashMap<Integer, double[]>();
 
 
 
@@ -300,6 +308,10 @@ public class SnowMeltingPointCaseDegreeDay {
 			outErrorODELiquidWaterHM.put((Integer)idStations[i], new double[]{errorODELiquidWater});
 			
 			outErrorSWEHM.put((Integer)idStations[i], new double[]{errorSWE});
+
+			outFreezing.put((Integer)idStations[i], new double[]{freezing});
+
+			outMelting.put((Integer)idStations[i], new double[]{melting});
 
 		}
 
