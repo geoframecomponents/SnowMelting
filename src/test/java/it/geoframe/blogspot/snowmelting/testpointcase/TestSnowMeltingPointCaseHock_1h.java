@@ -23,10 +23,10 @@ import java.util.HashMap;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.jgrasstools.gears.io.rasterreader.OmsRasterReader;
-import org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader;
-import org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader;
-import org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter;
+import org.hortonmachine.gears.io.rasterreader.OmsRasterReader;
+import org.hortonmachine.gears.io.shapefile.OmsShapefileFeatureReader;
+import org.hortonmachine.gears.io.timedependent.OmsTimeSeriesIteratorReader;
+import org.hortonmachine.gears.io.timedependent.OmsTimeSeriesIteratorWriter;
 import org.junit.Test;
 
 import it.geoframe.blogspot.snowmelting.pointcase.SnowMeltingPointCaseHock;
@@ -80,8 +80,6 @@ public class TestSnowMeltingPointCaseHock_1h {
 		
 		OmsRasterReader skyViewReader = new OmsRasterReader();
 		skyViewReader.file = "resources/Input/sky_10.asc";
-		skyViewReader.fileNovalue = -9999.0;
-		skyViewReader.geodataNovalue = Double.NaN;
 		skyViewReader.process();
 		GridCoverage2D skyView = skyViewReader.outRaster;
 

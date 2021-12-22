@@ -18,7 +18,7 @@
 package snowMeltingRasterCase;
 
 
-import org.jgrasstools.gears.libs.modules.JGTConstants;
+import org.hortonmachine.gears.libs.modules.HMConstants;
 
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
@@ -48,11 +48,11 @@ import snowMeltingPointCase.SimpleModelFactory;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.jgrasstools.gears.libs.modules.JGTModel;
-import org.jgrasstools.gears.utils.CrsUtilities;
-import org.jgrasstools.gears.utils.RegionMap;
-import org.jgrasstools.gears.utils.coverage.CoverageUtilities;
-import org.jgrasstools.gears.utils.geometry.GeometryUtilities;
+import org.hortonmachine.gears.libs.modules.HMModel;
+import org.hortonmachine.gears.utils.CrsUtilities;
+import org.hortonmachine.gears.utils.RegionMap;
+import org.hortonmachine.gears.utils.coverage.CoverageUtilities;
+import org.hortonmachine.gears.utils.geometry.GeometryUtilities;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -68,11 +68,11 @@ import com.vividsolutions.jts.geom.Point;
 		+ "the shortwave, the temperature values, the skyview and the energy index maps and the DEM")
 @Author(name = "Marialaura Bancheri & Giuseppe Formetta", contact = "maryban@hotmail.it")
 @Keywords("Hydrology, Snow Model")
-@Label(JGTConstants.HYDROGEOMORPHOLOGY)
+@Label(HMConstants.HYDROGEOMORPHOLOGY)
 @Name("Snow")
 @Status(Status.CERTIFIED)
 @License("General Public License Version 3 (GPLv3)")
-public class SnowMeltingRasterCase extends JGTModel {
+public class SnowMeltingRasterCase extends HMModel {
 
 	@Description("The map of the interpolated temperature.")
 	@In

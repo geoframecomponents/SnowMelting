@@ -15,64 +15,78 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geoframe.blogspot.snowmelting.testpointcase;
+package snowTest;
 
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
 
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.hortonmachine.gears.io.shapefile.OmsShapefileFeatureReader;
-import org.hortonmachine.gears.io.timedependent.OmsTimeSeriesIteratorReader;
-import org.hortonmachine.gears.io.timedependent.OmsTimeSeriesIteratorWriter;
+import org.jgrasstools.gears.io.rasterreader.OmsRasterReader;
+import org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader;
+import org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader;
+import org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter;
 import org.junit.Test;
 
-import it.geoframe.blogspot.snowmelting.pointcase.SnowMeltingPointCaseDegreeDay;
+import snowMeltingPointCase.SnowMeltingPointCase;
 
 /**
  * Test the {@link Snow} module.
  * 
- * @author Niccolo' Tubini
+ * @author Marialaura BAncheri
  */
-public class TestSnowMeltingPointCaseClassical_1h {
+public class TestSnowMeltingPointCase {
 
 	@Test
 	public void Test() throws Exception {
 
 
-		String startDate = "2013-11-01 00:00";
-		String endDate = "2013-11-11 00:00";
+		String startDate = "1994-01-17 00:00" ;
+		String endDate = "1994-01-18 00:00";
 		int timeStepMinutes = 60;
 		String fId = "ID";
 
-		String inPathToRainfall ="resources/Input/snowrainsep_precip_10_1_impulso.csv";
-		String inPathToSnowfall ="resources/Input/snowrainsep_snow_10_1_impulso.csv";
-		String inPathToAirT ="resources/Input/airT_10.csv";
+		String inPathToRainfall ="resources/Input/rain.csv";
+		String inPathToSnowfall ="resources/Input/snow.csv";
+		String inPathToAirT ="resources/Input/Temperature.csv";
+		String inPathToSWRB ="resources/Input/DIRETTA.csv";
 
 
 
 		OmsTimeSeriesIteratorReader rainfallReader = getTimeseriesReader(inPathToRainfall, fId, startDate, endDate, timeStepMinutes);
 		OmsTimeSeriesIteratorReader snowfallReader = getTimeseriesReader(inPathToSnowfall, fId, startDate, endDate, timeStepMinutes);
 		OmsTimeSeriesIteratorReader airTReader = getTimeseriesReader(inPathToAirT, fId, startDate, endDate, timeStepMinutes);
+		OmsTimeSeriesIteratorReader SWRBReader = getTimeseriesReader(inPathToSWRB, fId, startDate, endDate, timeStepMinutes);
+
+
+
+		OmsRasterReader demReader = new OmsRasterReader();
+		demReader.file = "resources/Input/dem_stazioni.asc";
+		demReader.fileNovalue = -9999.0;
+		demReader.geodataNovalue = Double.NaN;
+		demReader.process();
+		GridCoverage2D dem = demReader.outRaster;
+
+		OmsRasterReader skyViewReader = new OmsRasterReader();
+		skyViewReader.file = "resources/Input/skyview.asc";
+		skyViewReader.fileNovalue = -9999.0;
+		skyViewReader.geodataNovalue = Double.NaN;
+		skyViewReader.process();
+		GridCoverage2D skyView = skyViewReader.outRaster;
+
 
 		
 		OmsShapefileFeatureReader stationsReader = new OmsShapefileFeatureReader();
-		stationsReader.file = "resources/Input/centroide_10.shp";
+		stationsReader.file = "resources/Input/stations.shp";
 		stationsReader.readFeatureCollection();
 		SimpleFeatureCollection stationsFC = stationsReader.geodata;
 
-		String pathToSWE = "resources/Output/SWEClassical_1_impulso_hourly_new.csv";
-		String pathToMeltingDischarge = "resources/Output/MeltingClassical_1_impulso_hourly_new.csv";
-		String pathToErrorODESolidWater = "resources/Output/errorSolidWater_hourly.csv";
-		String pathToErrorODELiquidWater = "resources/Output/errorLiquidWater_hourly.csv";
-		String pathToErrorSWE = "resources/Output/errorSWE_hourly.csv";
-		
+		String pathToSWE= "resources/Output/SWE_hourly.csv";
+		String pathToMeltingDischarge= "resources/Output/Melting_Hourly.csv";
 
 		OmsTimeSeriesIteratorWriter writerSWE = new OmsTimeSeriesIteratorWriter();
 		OmsTimeSeriesIteratorWriter writerMelting = new OmsTimeSeriesIteratorWriter();
-		OmsTimeSeriesIteratorWriter writerErrorODESolidWater = new OmsTimeSeriesIteratorWriter();
-		OmsTimeSeriesIteratorWriter writerErrorODELiquidWater = new OmsTimeSeriesIteratorWriter();
-		OmsTimeSeriesIteratorWriter writerErrorSWE= new OmsTimeSeriesIteratorWriter();
 
 
 		writerSWE.file = pathToSWE;
@@ -84,66 +98,53 @@ public class TestSnowMeltingPointCaseClassical_1h {
 		writerMelting.tStart = startDate;
 		writerMelting.tTimestep = timeStepMinutes;
 		writerMelting.fileNovalue="-9999";
-		
-		writerErrorODESolidWater.file = pathToErrorODESolidWater;
-		writerErrorODESolidWater.tStart = startDate;
-		writerErrorODESolidWater.tTimestep = timeStepMinutes;
-		writerErrorODESolidWater.fileNovalue="-9999";
-		
-		writerErrorODELiquidWater.file = pathToErrorODELiquidWater;
-		writerErrorODELiquidWater.tStart = startDate;
-		writerErrorODELiquidWater.tTimestep = timeStepMinutes;
-		writerErrorODELiquidWater.fileNovalue="-9999";
-		
-		writerErrorSWE.file = pathToErrorSWE;
-		writerErrorSWE.tStart = startDate;
-		writerErrorSWE.tTimestep = timeStepMinutes;
-		writerErrorSWE.fileNovalue="-9999";
 
 
-		SnowMeltingPointCaseDegreeDay snow = new SnowMeltingPointCaseDegreeDay();
-
+		SnowMeltingPointCase snow = new SnowMeltingPointCase();
+		snow.inSkyview = skyView;
+		snow.inDem = dem;
 		snow.inStations = stationsFC;
-		snow.fStationsid = "basinid";
+		snow.fStationsid = "netnum";
 
-		
 		while( airTReader.doProcess  ) { 
 
-		
-			snow.combinedMeltingFactor=0.95102;
-			snow.freezingFactor=0.8921;
-			snow.alfa_l = 0.3504315;
-			snow.meltingTemperature=0;
-			snow.timeStepMinutes = 60;
+			snow.model="Hock";
+			snow.tStartDate=startDate;
+			snow.combinedMeltingFactor=15.612176;
+			snow.freezingFactor=0.35;
+			snow.radiationFactor=10000;
+			snow.alfa_l = 18;
+			snow.meltingTemperature=-2.5;
+
 
 			airTReader.nextRecord();	
 			HashMap<Integer, double[]> id2ValueMap = airTReader.outData;
 			snow.inTemperatureValues= id2ValueMap;
 
-			
 			rainfallReader.nextRecord();
 			id2ValueMap = rainfallReader.outData;
 			snow.inRainfallValues = id2ValueMap;
-			
+
 			snowfallReader.nextRecord();
 			id2ValueMap = snowfallReader.outData;
 			snow.inSnowfallValues = id2ValueMap;
 
-//			System.out.println(snowfallReader.tCurrent);
+			SWRBReader.nextRecord();
+			id2ValueMap = SWRBReader.outData;
+			snow.inShortwaveRadiationValues = id2ValueMap;
+
 
 			snow.process();
 
 
 			HashMap<Integer, double[]> outHM = snow.outSWEHM;
 			HashMap<Integer, double[]> outHMQ = snow.outMeltingDischargeHM;
-			HashMap<Integer, double[]> outHMErrorSolidWater = snow.outErrorODESolidWaterHM;
-			HashMap<Integer, double[]> outHMErrorLiquidWater = snow.outErrorODELiquidWaterHM;
-			HashMap<Integer, double[]> outHMErrorSWE = snow.outErrorSWEHM;
-			
 
 			writerSWE.inData = outHM;
 			writerSWE.writeNextLine();
-			
+
+
+
 			if (pathToSWE != null) {
 				writerSWE.close();
 			}
@@ -154,33 +155,13 @@ public class TestSnowMeltingPointCaseClassical_1h {
 			if (pathToMeltingDischarge != null) {
 				writerMelting.close();
 			}
-			
-			writerErrorODESolidWater.inData = outHMErrorSolidWater;
-			writerErrorODESolidWater.writeNextLine();
-
-			if (pathToErrorODESolidWater != null) {
-				writerErrorODESolidWater.close();
-			}
-			
-			writerErrorODELiquidWater.inData = outHMErrorLiquidWater;
-			writerErrorODELiquidWater.writeNextLine();
-
-			if (pathToErrorODELiquidWater != null) {
-				writerErrorODELiquidWater.close();
-			}
-			
-			writerErrorSWE.inData = outHMErrorSWE;
-			writerErrorSWE.writeNextLine();
-
-			if (pathToErrorSWE != null) {
-				writerErrorSWE.close();
-			}
 
 
 		}
 
 		airTReader.close();
 		rainfallReader.close();
+		SWRBReader.close();
 
 	}
 

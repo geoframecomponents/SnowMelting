@@ -19,7 +19,7 @@
 
 package it.geoframe.blogspot.snowmelting.pointcase;
 
-import static org.jgrasstools.gears.libs.modules.JGTConstants.isNovalue;
+import static org.hortonmachine.gears.libs.modules.HMConstants.isNovalue;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,7 +28,7 @@ import java.util.Set;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.jgrasstools.gears.libs.modules.JGTConstants;
+import org.hortonmachine.gears.libs.modules.HMConstants;
 import org.opengis.feature.simple.SimpleFeature;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -45,7 +45,6 @@ import oms3.annotations.Author;
 import oms3.annotations.Description;
 import oms3.annotations.Execute;
 import oms3.annotations.In;
-import oms3.annotations.Initialize;
 import oms3.annotations.Keywords;
 import oms3.annotations.Label;
 import oms3.annotations.License;
@@ -60,7 +59,7 @@ import oms3.annotations.Unit;
 		+ "the temperature values")
 @Author(name = "Niccolò Tubini, Giuseppe Formetta, Marialaura Bancheri", contact = "")
 @Keywords("Hydrology, Snow Model")
-@Label(JGTConstants.HYDROGEOMORPHOLOGY)
+@Label(HMConstants.HYDROGEOMORPHOLOGY)
 @Name("Snow")
 @Status(Status.CERTIFIED)
 @License("General Public License Version 3 (GPLv3)")
