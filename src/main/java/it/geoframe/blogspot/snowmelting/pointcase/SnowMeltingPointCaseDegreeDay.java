@@ -31,8 +31,15 @@ import org.geotools.feature.FeatureIterator;
 import org.hortonmachine.gears.libs.modules.HMConstants;
 import org.opengis.feature.simple.SimpleFeature;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
+/*
+ * Replaced with lines 40 and 41 
+ * https://sourceforge.net/p/geotools/mailman/message/36652855/
+ */
+//import com.vividsolutions.jts.geom.Coordinate;
+//import com.vividsolutions.jts.geom.Geometry;
+
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 
 import it.geoframe.blogspot.numerical.ode.NewtonRaphson;
 import it.geoframe.blogspot.snowmelting.freezing.Freezing;

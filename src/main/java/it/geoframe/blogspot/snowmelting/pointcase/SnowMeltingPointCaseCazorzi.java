@@ -40,8 +40,15 @@ import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
+/*
+ * Replaced with lines 50 and 51 
+ * https://sourceforge.net/p/geotools/mailman/message/36652855/
+ */
+//import com.vividsolutions.jts.geom.Coordinate;
+//import com.vividsolutions.jts.geom.Geometry;
+
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 
 import it.geoframe.blogspot.numerical.ode.NewtonRaphson;
 import it.geoframe.blogspot.snowmelting.freezing.Freezing;
