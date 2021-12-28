@@ -59,9 +59,15 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Point;
+/*
+ * Replaced with lines 40 and 41 
+ * https://sourceforge.net/p/geotools/mailman/message/36652855/
+ */
+//import com.vividsolutions.jts.geom.Coordinate;
+//import com.vividsolutions.jts.geom.Point;
 
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
 
 @Description("The component computes the snow water equivalent and the melting discharge both with"
 		+ "raster data. The inputs of the components are the precipitation,"
@@ -291,8 +297,8 @@ public class SnowMeltingRasterCase extends HMModel {
 		int cols = regionMap.getCols();
 		int rows = regionMap.getRows();
 
-		WritableRaster outMeltingWritableRaster = CoverageUtilities.createDoubleWritableRaster(cols, rows, null, null, null);
-		WritableRaster outSWEWritableRaster =CoverageUtilities.createDoubleWritableRaster(cols, rows, null, null, null); 
+		WritableRaster outMeltingWritableRaster = CoverageUtilities.createWritableRaster(cols, rows, null, null, null);
+		WritableRaster outSWEWritableRaster =CoverageUtilities.createWritableRaster(cols, rows, null, null, null); 
 
 		WritableRandomIter MeltingIter = RandomIterFactory.createWritable(outMeltingWritableRaster, null);       
 		WritableRandomIter SWEIter = RandomIterFactory.createWritable(outSWEWritableRaster, null);
