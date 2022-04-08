@@ -19,8 +19,8 @@
 package snowMeltingPointCase;
 
 
-import org.jgrasstools.gears.libs.modules.JGTConstants;
-import static org.jgrasstools.gears.libs.modules.JGTConstants.isNovalue;
+import org.hortonmachine.gears.libs.modules.HMConstants;
+import static org.hortonmachine.gears.libs.modules.HMConstants.isNovalue;
 
 
 import java.awt.image.RenderedImage;
@@ -49,10 +49,10 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.SchemaException;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.jgrasstools.gears.libs.modules.JGTModel;
-import org.jgrasstools.gears.utils.CrsUtilities;
-import org.jgrasstools.gears.utils.coverage.CoverageUtilities;
-import org.jgrasstools.gears.utils.geometry.GeometryUtilities;
+import org.hortonmachine.gears.libs.modules.HMModel;
+import org.hortonmachine.gears.utils.CrsUtilities;
+import org.hortonmachine.gears.utils.coverage.CoverageUtilities;
+import org.hortonmachine.gears.utils.geometry.GeometryUtilities;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -68,11 +68,11 @@ import com.vividsolutions.jts.geom.Point;
 		+ "the shortwave, the temperature values, the skyview, the energy index and the DEM maps")
 @Author(name = "Marialaura Bancheri & Giuseppe Formetta", contact = "maryban@hotmail.it")
 @Keywords("Hydrology, Snow Model")
-@Label(JGTConstants.HYDROGEOMORPHOLOGY)
+@Label(HMConstants.HYDROGEOMORPHOLOGY)
 @Name("Snow")
 @Status(Status.CERTIFIED)
 @License("General Public License Version 3 (GPLv3)")
-public class SnowMeltingPointCase extends JGTModel {
+public class SnowMeltingPointCase extends HMModel {
 
 	@Description("The Hashmap with the time series of the rainfall values")
 	@In

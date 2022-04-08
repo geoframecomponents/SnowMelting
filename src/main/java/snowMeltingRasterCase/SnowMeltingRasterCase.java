@@ -18,7 +18,7 @@
 package snowMeltingRasterCase;
 
 
-import org.jgrasstools.gears.libs.modules.JGTConstants;
+import org.hortonmachine.gears.libs.modules.HMConstants;
 
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
@@ -48,31 +48,37 @@ import snowMeltingPointCase.SimpleModelFactory;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.jgrasstools.gears.libs.modules.JGTModel;
-import org.jgrasstools.gears.utils.CrsUtilities;
-import org.jgrasstools.gears.utils.RegionMap;
-import org.jgrasstools.gears.utils.coverage.CoverageUtilities;
-import org.jgrasstools.gears.utils.geometry.GeometryUtilities;
+import org.hortonmachine.gears.libs.modules.HMModel;
+import org.hortonmachine.gears.utils.CrsUtilities;
+import org.hortonmachine.gears.utils.RegionMap;
+import org.hortonmachine.gears.utils.coverage.CoverageUtilities;
+import org.hortonmachine.gears.utils.geometry.GeometryUtilities;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Point;
+/*
+ * Replaced with lines 40 and 41 
+ * https://sourceforge.net/p/geotools/mailman/message/36652855/
+ */
+//import com.vividsolutions.jts.geom.Coordinate;
+//import com.vividsolutions.jts.geom.Point;
 
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
 
 @Description("The component computes the snow water equivalent and the melting discharge both with"
 		+ "raster data. The inputs of the components are the precipitation,"
 		+ "the shortwave, the temperature values, the skyview and the energy index maps and the DEM")
 @Author(name = "Marialaura Bancheri & Giuseppe Formetta", contact = "maryban@hotmail.it")
 @Keywords("Hydrology, Snow Model")
-@Label(JGTConstants.HYDROGEOMORPHOLOGY)
+@Label(HMConstants.HYDROGEOMORPHOLOGY)
 @Name("Snow")
 @Status(Status.CERTIFIED)
 @License("General Public License Version 3 (GPLv3)")
-public class SnowMeltingRasterCase extends JGTModel {
+public class SnowMeltingRasterCase extends HMModel {
 
 	@Description("The map of the interpolated temperature.")
 	@In
@@ -291,8 +297,8 @@ public class SnowMeltingRasterCase extends JGTModel {
 		int cols = regionMap.getCols();
 		int rows = regionMap.getRows();
 
-		WritableRaster outMeltingWritableRaster = CoverageUtilities.createDoubleWritableRaster(cols, rows, null, null, null);
-		WritableRaster outSWEWritableRaster =CoverageUtilities.createDoubleWritableRaster(cols, rows, null, null, null); 
+		WritableRaster outMeltingWritableRaster = CoverageUtilities.createWritableRaster(cols, rows, null, null, null);
+		WritableRaster outSWEWritableRaster =CoverageUtilities.createWritableRaster(cols, rows, null, null, null); 
 
 		WritableRandomIter MeltingIter = RandomIterFactory.createWritable(outMeltingWritableRaster, null);       
 		WritableRandomIter SWEIter = RandomIterFactory.createWritable(outSWEWritableRaster, null);
