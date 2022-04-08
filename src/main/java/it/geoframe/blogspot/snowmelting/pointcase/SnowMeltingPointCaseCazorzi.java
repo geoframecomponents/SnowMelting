@@ -74,7 +74,7 @@ import oms3.annotations.Unit;
 		+ "punctual data. The snow melting is computed by using a degree day model. "
 		+ "The inputs of the components are the rainfall, the snowfall"
 		+ "the temperature values")
-@Author(name = "Niccolò Tubini, Giuseppe Formetta, Marialaura Bancheri", contact = "")
+@Author(name = "Marialaura Bancheri, Giuseppe Formetta, Niccolò Tubini", contact = "")
 @Keywords("Hydrology, Snow Model")
 @Label(HMConstants.HYDROGEOMORPHOLOGY)
 @Name("Snow")
