@@ -19,9 +19,7 @@
 package snowMeltingPointCase;
 
 
-import org.hortonmachine.gears.libs.modules.HMConstants;
 import static org.hortonmachine.gears.libs.modules.HMConstants.isNovalue;
-
 
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
@@ -30,6 +28,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Set;
+
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.SchemaException;
+import org.geotools.geometry.Position2D;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.hortonmachine.gears.libs.modules.HMConstants;
+import org.hortonmachine.gears.libs.modules.HMModel;
+import org.hortonmachine.gears.utils.coverage.CoverageUtilities;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 
 import oms3.annotations.Author;
 import oms3.annotations.Description;
@@ -42,25 +55,6 @@ import oms3.annotations.Name;
 import oms3.annotations.Out;
 import oms3.annotations.Status;
 import oms3.annotations.Unit;
-
-import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.SchemaException;
-import org.geotools.geometry.DirectPosition2D;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.hortonmachine.gears.libs.modules.HMModel;
-import org.hortonmachine.gears.utils.CrsUtilities;
-import org.hortonmachine.gears.utils.coverage.CoverageUtilities;
-import org.hortonmachine.gears.utils.geometry.GeometryUtilities;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.geometry.DirectPosition;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 
 
 @Description("The component computes the snow water equivalent and the melting discharge with"
@@ -257,10 +251,10 @@ public class SnowMeltingPointCase extends HMModel {
 			Coordinate coordinate = (Coordinate) stationCoordinates.get(idIterator.next());
 
 			// define the position, according to the CRS, of the station in the map
-			DirectPosition point = new DirectPosition2D(sourceCRS, coordinate.x, coordinate.y);
+			var point = new Position2D(sourceCRS, coordinate.x, coordinate.y);
 
 			// trasform the position in two the indices of row and column 
-			DirectPosition gridPoint = transf.transform(point, null);
+			var gridPoint = transf.transform(point, null);
 
 			// add the indices to a list
 			columnStation.add((int) gridPoint.getCoordinate()[0]);

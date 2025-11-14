@@ -1,7 +1,7 @@
 /*
  * GNU GPL v3 License
  *
- * Copyright 2021 Niccolò Tubini, Giuseppe Formetta, Riccardo Rigon
+ * Copyright 2021 Niccolï¿½ Tubini, Giuseppe Formetta, Riccardo Rigon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,16 +29,16 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.geometry.Position;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.geometry.DirectPosition2D;
+import org.geotools.geometry.Position2D;
 import org.hortonmachine.gears.libs.modules.HMConstants;
 import org.hortonmachine.gears.utils.coverage.CoverageUtilities;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.geometry.DirectPosition;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 
 /*
  * Replaced with lines 50 and 51 
@@ -73,7 +73,7 @@ import oms3.annotations.Unit;
 		+ "punctual data. The snow melting is computed by using a degree day model. "
 		+ "The inputs of the components are the rainfall, the snowfall"
 		+ "the temperature values")
-@Author(name = "Marialaura Bancheri, Giuseppe Formetta, Niccolò Tubini", contact = "")
+@Author(name = "Marialaura Bancheri, Giuseppe Formetta, Niccolï¿½ Tubini", contact = "")
 @Keywords("Hydrology, Snow Model")
 @Label(HMConstants.HYDROGEOMORPHOLOGY)
 @Name("Snow")
@@ -217,8 +217,6 @@ public class SnowMeltingPointCaseHock {
 	private CoordinateReferenceSystem sourceCRS;
 	private MathTransform transf;
 	private Coordinate coordinate;
-	private DirectPosition point;
-	private DirectPosition gridPoint;
 	
 	@Description("List of the indeces of the columns of the station in the map")
 	private ArrayList <Integer> columnStation= new ArrayList <Integer>();
@@ -239,6 +237,10 @@ public class SnowMeltingPointCaseHock {
 	private CheckMassBalance checkMassBalance;
 
 	private int step;
+
+	private Position2D point;
+
+	private Position gridPoint;
 	
 		
 	/**
@@ -297,7 +299,7 @@ public class SnowMeltingPointCaseHock {
 			coordinate = (Coordinate) stationCoordinates.get(idIterator.next());
 
 			// define the position, according to the CRS, of the station in the map
-			point = new DirectPosition2D(sourceCRS, coordinate.x, coordinate.y);
+			point = new Position2D(sourceCRS, coordinate.x, coordinate.y);
 
 			// trasform the position in two the indices of row and column 
 			gridPoint = transf.transform(point, null);

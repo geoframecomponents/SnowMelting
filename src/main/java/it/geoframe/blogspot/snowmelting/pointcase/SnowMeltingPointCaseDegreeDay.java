@@ -1,7 +1,7 @@
 /*
  * GNU GPL v3 License
  *
- * Copyright 2021 Niccolò Tubini, Giuseppe Formetta, Riccardo Rigon
+ * Copyright 2021 Niccolï¿½ Tubini, Giuseppe Formetta, Riccardo Rigon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,10 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.hortonmachine.gears.libs.modules.HMConstants;
-import org.opengis.feature.simple.SimpleFeature;
 
 /*
  * Replaced with lines 40 and 41 
@@ -64,7 +64,7 @@ import oms3.annotations.Unit;
 		+ "punctual data. The snow melting is computed by using a degree day model. "
 		+ "The inputs of the components are the rainfall, the snowfall"
 		+ "the temperature values")
-@Author(name = "Marialaura Bancheri, Giuseppe Formetta, Niccolò Tubini", contact = "")
+@Author(name = "Marialaura Bancheri, Giuseppe Formetta, Niccolï¿½ Tubini", contact = "")
 @Keywords("Hydrology, Snow Model")
 @Label(HMConstants.HYDROGEOMORPHOLOGY)
 @Name("Snow")
