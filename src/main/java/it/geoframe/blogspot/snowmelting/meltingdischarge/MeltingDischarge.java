@@ -1,7 +1,7 @@
 /*
  * GNU GPL v3 License
  *
- * Copyright 2021 Niccolò Tubini, Giuseppe Formetta, Riccardo Rigon
+ * Copyright 2021 Niccolï¿½ Tubini, Giuseppe Formetta, Riccardo Rigon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,18 +20,17 @@
 package it.geoframe.blogspot.snowmelting.meltingdischarge;
 
 /**
- * @author Niccolò Tubini, Giuseppe Formetta
+ * @author Niccolï¿½ Tubini, Giuseppe Formetta
  * 
  */
 public class MeltingDischarge {
 	
-	private double meltingDischarge;
 	
-	public double[] compute(double snowPorosity, double liquidWater, double solidWater) {
+	public static double[] compute(double snowPorosity, double liquidWater, double solidWater) {
 		
 		if(liquidWater>snowPorosity) {
 			
-			meltingDischarge = liquidWater - snowPorosity;
+			double meltingDischarge = liquidWater - snowPorosity;
 			liquidWater = snowPorosity;
 			
 			return new double[] {meltingDischarge, liquidWater};	

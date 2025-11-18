@@ -23,9 +23,9 @@ package it.geoframe.blogspot.snowmelting.snowmelt;
  * @author Niccolo` Tubini, Giuseppe Formetta, Marialaura Bancheri
  * 
  */
-public class HockModel implements SnowMeltModel {
+public class HockModel extends SnowMeltModel {
 	
-	public double computeMelting(double combinedMeltingFactor, double radiationFactor, double temperature, double meltingTemperature,
+	public static double computeMelting(double combinedMeltingFactor, double radiationFactor, double temperature, double meltingTemperature,
 			double shortwave, double skyview) {
 		
 		if(temperature>meltingTemperature) {

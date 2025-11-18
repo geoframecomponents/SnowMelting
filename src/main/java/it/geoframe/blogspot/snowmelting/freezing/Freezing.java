@@ -1,7 +1,7 @@
 /*
  * GNU GPL v3 License
  *
- * Copyright 2021 Niccolò Tubini, Giuseppe Formetta, Riccardo Rigon
+ * Copyright 2021 Niccolï¿½ Tubini, Giuseppe Formetta, Riccardo Rigon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,14 +20,14 @@
 package it.geoframe.blogspot.snowmelting.freezing;
 
 /**
- * @author Niccolò Tubini, Giuseppe Formetta
+ * @author Niccolï¿½ Tubini, Giuseppe Formetta
  * 
  */
 public class Freezing {
 
 
 
-	public double compute(double temperature, double meltingTemperature, double freezingFactor) {
+	public static double compute(double temperature, double meltingTemperature, double freezingFactor) {
 
 		if(temperature<meltingTemperature) {
 
@@ -43,7 +43,7 @@ public class Freezing {
 	
 	
 	
-	public double checkFreezing(double initialConditionLiquidWater, double rainfall, double freezing) {
+	public static double checkFreezing(double initialConditionLiquidWater, double rainfall, double freezing) {
 		
 		return Math.min(initialConditionLiquidWater+rainfall, freezing);
 		

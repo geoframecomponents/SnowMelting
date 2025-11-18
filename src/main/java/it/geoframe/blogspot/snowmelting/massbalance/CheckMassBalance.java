@@ -1,7 +1,7 @@
 /*
  * GNU GPL v3 License
  *
- * Copyright 2021 Niccolò Tubini, Giuseppe Formetta, Riccardo Rigon
+ * Copyright 2021 Niccolï¿½ Tubini, Giuseppe Formetta, Riccardo Rigon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,28 +20,28 @@
 package it.geoframe.blogspot.snowmelting.massbalance;
 
 /**
- * @author Niccolò Tubini, Giuseppe Formetta
+ * @author Niccolï¿½ Tubini, Giuseppe Formetta
  * 
  */
 public class CheckMassBalance {
 	
 	
 	
-	public double errorODESolidWater(double initialConditionSolidWater, double solidWater, double snowfall, double freezing, double melting) {
+	public static double errorODESolidWater(double initialConditionSolidWater, double solidWater, double snowfall, double freezing, double melting) {
 		
 		return solidWater - initialConditionSolidWater - snowfall - freezing + melting;
 		
 	}
 	
 	
-	public double errorODELiquidWater(double initialConditionLiquidWater, double liquidWater, double rainfall, double freezing, double melting, double meltingDischarge) {
+	public static double errorODELiquidWater(double initialConditionLiquidWater, double liquidWater, double rainfall, double freezing, double melting, double meltingDischarge) {
 		
 		return liquidWater - initialConditionLiquidWater - rainfall + freezing - melting + meltingDischarge;
 		
 	}
 	
 	
-    public double errorSWE(double swe, double initialConditionLiquidWater, double initialConditionSolidWater, double rainfall, double snowfall, double meltingDischarge) {
+    public static double errorSWE(double swe, double initialConditionLiquidWater, double initialConditionSolidWater, double rainfall, double snowfall, double meltingDischarge) {
 		
 		return rainfall + snowfall - (swe - (initialConditionLiquidWater+initialConditionSolidWater)) - meltingDischarge;
 		

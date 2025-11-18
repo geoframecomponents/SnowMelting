@@ -23,10 +23,10 @@ package it.geoframe.blogspot.snowmelting.snowmelt;
  * @author Niccolo` Tubini, Giuseppe Formetta, Marialaura Bancheri
  * 
  */
-public interface SnowMeltModel {
+public class SnowMeltModel {
 	
 	
-	public default double checkMelting(double initialConditionSolidWater, double snowfall, double melting) {
+	public static double checkMelting(double initialConditionSolidWater, double snowfall, double melting) {
 	
 		return Math.min(initialConditionSolidWater+snowfall, melting);
 		

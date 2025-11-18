@@ -23,10 +23,10 @@ package it.geoframe.blogspot.snowmelting.snowmelt;
  * @author Niccolo` Tubini, Giuseppe Formetta, Marialaura Bancheri
  * 
  */
-public class DegreeDayModel implements SnowMeltModel{
+public class DegreeDayModel extends SnowMeltModel{
 	
 	
-	public double computeMelting(double combinedMeltingFactor, double temperature, double meltingTemperature) {
+	public static double computeMelting(double combinedMeltingFactor, double temperature, double meltingTemperature) {
 		
 		return Math.max(0, combinedMeltingFactor * (temperature - meltingTemperature));
 				

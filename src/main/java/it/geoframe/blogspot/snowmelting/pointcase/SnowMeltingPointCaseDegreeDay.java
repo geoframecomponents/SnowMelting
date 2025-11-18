@@ -164,29 +164,9 @@ public class SnowMeltingPointCaseDegreeDay {
 
 
 
-
-	private double rainfall;
-	private double snowfall;
-	private double temperature;
-
-	private double melting;
-	private double freezing;
-	private double meltingDischarge;
-	private double snowPorosity;
-	
-	private double liquidWater;
-	private double solidWater;
-	private double swe;
-	
-	private double errorODESolidWater;
-	private double errorODELiquidWater;
-	private double errorSWE;
-
 	@Description(" The vetor containing the id of the station")
 	private Object []idStations;
 
-	@Description("the linked HashMap with the coordinate of the stations")
-	private LinkedHashMap<Integer, Coordinate> stationCoordinates;
 
 	private Set<Integer> stationCoordinatesIdSet;
 
@@ -195,14 +175,6 @@ public class SnowMeltingPointCaseDegreeDay {
 
 
 	private Iterator<Integer> idIterator;
-
-	private DegreeDayModel degreeDayModel;
-	private Freezing computeFreezing;
-	private MeltingDischarge computeMeltingDischarge;
-	private NewtonRaphson newton;
-	private ODESolidWater odeSolidWater;
-	private ODELiquidWater odeLiquidWater;
-	private CheckMassBalance checkMassBalance;
 
 	private int step;
 	
@@ -220,7 +192,7 @@ public class SnowMeltingPointCaseDegreeDay {
 		if (step==0){
 
 
-			stationCoordinates = getCoordinate(inStations, fStationsid);
+			LinkedHashMap<Integer, Coordinate> stationCoordinates = getCoordinate(inStations, fStationsid);
 
 
 			stationCoordinatesIdSet = stationCoordinates.keySet();
@@ -236,14 +208,6 @@ public class SnowMeltingPointCaseDegreeDay {
 
 			}
 
-			odeSolidWater = new ODESolidWater();
-			odeLiquidWater = new ODELiquidWater();
-			newton = new NewtonRaphson();
-
-			computeFreezing = new Freezing();
-			degreeDayModel = new DegreeDayModel();
-			computeMeltingDischarge = new MeltingDischarge();
-			checkMassBalance = new CheckMassBalance();
 
 		}//close step==0
 
@@ -257,73 +221,117 @@ public class SnowMeltingPointCaseDegreeDay {
 
 
 			// read the input data for the given station
-			temperature = inTemperatureValues.get(idStations[i])[0];
+			double temperature = inTemperatureValues.get(idStations[i])[0];
 
-			rainfall = inRainfallValues.get(idStations[i])[0];
-			if(isNovalue(rainfall)|rainfall<0)rainfall=0;
+			double rainfall = inRainfallValues.get(idStations[i])[0];
+			if(isNovalue(rainfall) || rainfall<0)rainfall=0;
 
+			double snowfall = inSnowfallValues.get(idStations[i])[0];
+			if(isNovalue(snowfall) || snowfall<0)snowfall=0;
 
-			snowfall = inSnowfallValues.get(idStations[i])[0];
-			if(isNovalue(snowfall)|snowfall<0)snowfall=0;
+			double initialSolidWater = initialConditionSolidWater.get(i)[0];
+			double initialLiquidWater = initialConditionLiquidWater.get(i)[0];
 
-
-			freezing = computeFreezing.compute(temperature, meltingTemperature, freezingFactor);
-			freezing = computeFreezing.checkFreezing(initialConditionLiquidWater.get(i)[0], rainfall, freezing);
-
-			melting = degreeDayModel.computeMelting(combinedMeltingFactor, temperature, meltingTemperature);
-			melting = degreeDayModel.checkMelting(initialConditionSolidWater.get(i)[0], snowfall, melting);
+			SnowStepResult stRes = computeSnowStep(//
+					temperature, //
+					rainfall, //
+					snowfall, //
+					meltingTemperature, //
+					combinedMeltingFactor, // 
+					freezingFactor, //
+					alfa_l, //
+					initialSolidWater, //
+					initialLiquidWater //
+					);
 			
-			odeSolidWater.set(initialConditionSolidWater.get(i)[0], snowfall, freezing, melting);
-			solidWater = newton.solve(initialConditionSolidWater.get(i)[0], odeSolidWater);
-
-
-			snowPorosity = solidWater*alfa_l;
-
-			odeLiquidWater.set(initialConditionLiquidWater.get(i)[0], rainfall, freezing, melting, snowPorosity);
-			liquidWater = newton.solve(initialConditionLiquidWater.get(i)[0], odeLiquidWater);
-
-
-			meltingDischarge = computeMeltingDischarge.compute(snowPorosity, liquidWater, solidWater)[0];
-			liquidWater = computeMeltingDischarge.compute(snowPorosity, liquidWater, solidWater)[1];
-
-			swe = solidWater + liquidWater;
-
-
-			errorODESolidWater = checkMassBalance.errorODESolidWater(initialConditionSolidWater.get(i)[0], solidWater, snowfall, freezing, melting);
-			errorODELiquidWater = checkMassBalance.errorODELiquidWater(initialConditionLiquidWater.get(i)[0], liquidWater, rainfall, freezing, melting, meltingDischarge);
-			errorSWE = checkMassBalance.errorSWE(swe, initialConditionLiquidWater.get(i)[0], initialConditionSolidWater.get(i)[0],
-																rainfall, snowfall, meltingDischarge);
-
-//			System.out.println("error ODE solid water " + errorODESolidWater);
-//			System.out.println("error ODE liquid water " + errorODELiquidWater);
-//			System.out.println("error swe" + errorSWE);
-		
-
-//			System.out.println(snowfall +"\t"+ rainfall +"\t"+ solidWater +"\t"+ liquidWater +"\t"+ swe +"\t"+ freezing +"\t"+ melting +"\t"+ meltingDischarge);
-
-			
-			initialConditionSolidWater.put(i,new double[]{solidWater});
-			initialConditionLiquidWater.put(i,new double[]{liquidWater});
-			
-			outSWEHM.put((Integer)idStations[i], new double[]{swe});
-
-			outMeltingDischargeHM.put((Integer)idStations[i], new double[]{meltingDischarge});
-			
-			outErrorODESolidWaterHM.put((Integer)idStations[i], new double[]{errorODESolidWater});
-			
-			outErrorODELiquidWaterHM.put((Integer)idStations[i], new double[]{errorODELiquidWater});
-			
-			outErrorSWEHM.put((Integer)idStations[i], new double[]{errorSWE});
-
-			outFreezing.put((Integer)idStations[i], new double[]{freezing});
-
-			outMelting.put((Integer)idStations[i], new double[]{melting});
-
+			initialConditionSolidWater.put(i,new double[]{stRes.solidWater});
+			initialConditionLiquidWater.put(i,new double[]{stRes.liquidWater});
+			outSWEHM.put((Integer)idStations[i], new double[]{stRes.swe});
+			outMeltingDischargeHM.put((Integer)idStations[i], new double[]{stRes.meltingDischarge});
+			outErrorODESolidWaterHM.put((Integer)idStations[i], new double[]{stRes.errorODESolidWater});
+			outErrorODELiquidWaterHM.put((Integer)idStations[i], new double[]{stRes.errorODELiquidWater});
+			outErrorSWEHM.put((Integer)idStations[i], new double[]{stRes.errorSWE});
+			outFreezing.put((Integer)idStations[i], new double[]{stRes.freezing});
+			outMelting.put((Integer)idStations[i], new double[]{stRes.melting});
 		}
 
 		step++;
 
 	}
+	
+	public static SnowStepResult computeSnowStep(//
+	        double temperature,//
+	        double rainfall,//
+	        double snowfall,//
+	        double meltingTemperature,//
+	        double combinedMeltingFactor, // already scaled to timestep
+	        double freezingFactor,        // already scaled to timestep
+	        double alfa_l,//
+	        double initialSolidWater,//
+	        double initialLiquidWater//
+	        ) {
+
+		// basic cleaning, same logic as in process()
+		if (isNovalue(rainfall) || rainfall < 0) {
+			rainfall = 0.0;
+		}
+		if (isNovalue(snowfall) || snowfall < 0) {
+			snowfall = 0.0;
+		}
+
+		// freezing
+		double freezing = Freezing.compute(temperature, meltingTemperature, freezingFactor);
+		freezing = Freezing.checkFreezing(initialLiquidWater, rainfall, freezing);
+
+		// melting
+		double melting = DegreeDayModel.computeMelting(combinedMeltingFactor, temperature, meltingTemperature);
+		melting = DegreeDayModel.checkMelting(initialSolidWater, snowfall, melting);
+
+		// solid water ODE
+		ODESolidWater odeSolidWater = new ODESolidWater();
+		ODELiquidWater odeLiquidWater = new ODELiquidWater();
+		NewtonRaphson newton = new NewtonRaphson();
+		odeSolidWater.set(initialSolidWater, snowfall, freezing, melting);
+		double solidWater = newton.solve(initialSolidWater, odeSolidWater);
+
+		// porosity
+		double snowPorosity = solidWater * alfa_l;
+
+		// liquid water ODE
+		odeLiquidWater.set(initialLiquidWater, rainfall, freezing, melting, snowPorosity);
+		double liquidWater = newton.solve(initialLiquidWater, odeLiquidWater);
+
+		// melting discharge + updated liquid water
+		double[] meltRes = MeltingDischarge.compute(snowPorosity, liquidWater, solidWater);
+		double meltingDischarge = meltRes[0];
+		liquidWater = meltRes[1];
+
+		// SWE
+		double swe = solidWater + liquidWater;
+
+		// errors
+		double errorODESolidWater = CheckMassBalance.errorODESolidWater(initialSolidWater, solidWater, snowfall,
+				freezing, melting);
+
+		double errorODELiquidWater = CheckMassBalance.errorODELiquidWater(initialLiquidWater, liquidWater, rainfall,
+				freezing, melting, meltingDischarge);
+
+		double errorSWE = CheckMassBalance.errorSWE(swe, initialLiquidWater, initialSolidWater, rainfall, snowfall,
+				meltingDischarge);
+
+		return new SnowStepResult(//
+				solidWater, //
+				liquidWater, //
+				swe, //
+				freezing, //
+				melting, //
+				meltingDischarge, //
+				errorODESolidWater, //
+				errorODELiquidWater, //
+				errorSWE//
+		);
+	}
+
 
 	private LinkedHashMap<Integer, Coordinate> getCoordinate(SimpleFeatureCollection collection, String idField)
 			throws Exception {
@@ -345,5 +353,17 @@ public class SnowMeltingPointCaseDegreeDay {
 
 	}
 
+	public record SnowStepResult(//
+			double solidWater, //
+			double liquidWater, //
+			double swe, //
+			double freezing, //
+			double melting, //
+			double meltingDischarge, //
+			double errorODESolidWater, //
+			double errorODELiquidWater, //
+			double errorSWE //
+	) {
+	}
 
 }
