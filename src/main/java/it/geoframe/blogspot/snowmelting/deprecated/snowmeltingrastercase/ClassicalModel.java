@@ -16,14 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geoframe.blogspot.snowmelting.snowmeltingrastercase;
+package it.geoframe.blogspot.snowmelting.deprecated.snowmeltingrastercase;
+
 
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class CazorziModel.
+ * The Class ClassicalModel.
  */
-public class CazorziModel implements SnowModelRaster{
+public class ClassicalModel implements SnowModelRaster{
 
 	/** The combined melting factor. */
 	double combinedMeltingFactor;
@@ -33,31 +34,20 @@ public class CazorziModel implements SnowModelRaster{
 	
 	/** The melting temperature. */
 	double meltingTemperature;
-	
-	/** The energy index. */
-	double EI;
-	
-	/** The skyview. */
-	double skyview;
 
 
 	/**
-	 * Instantiates a new cazorzi model.
+	 * Instantiates a new classical model.
 	 *
 	 * @param combinedMeltingFactor is the combined melting factor
 	 * @param temperature is the temperature
 	 * @param meltingTemperature is the melting temperature
-	 * @param EI is the energy index
-	 * @param skyview is the skyview
 	 */
-	public CazorziModel(double combinedMeltingFactor, double temperature, double meltingTemperature,
-			double EI, double skyview){
+	public ClassicalModel(double combinedMeltingFactor, double temperature, double meltingTemperature){
 		
 		this.combinedMeltingFactor=combinedMeltingFactor;
 		this.temperature=temperature;
 		this.meltingTemperature=meltingTemperature;
-		this.EI=EI;
-		this.skyview=skyview;
 		
 	}
 
@@ -68,7 +58,7 @@ public class CazorziModel implements SnowModelRaster{
 	 */
 	@Override
 	public double snowValues() {
-		return combinedMeltingFactor * (temperature - meltingTemperature)*EI*skyview;
+		return combinedMeltingFactor * (temperature - meltingTemperature);
 	}
 
 

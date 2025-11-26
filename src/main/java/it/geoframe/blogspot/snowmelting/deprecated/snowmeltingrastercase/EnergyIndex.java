@@ -1,4 +1,4 @@
-package it.geoframe.blogspot.snowmelting.snowmeltingrastercase;
+package it.geoframe.blogspot.snowmelting.deprecated.snowmeltingrastercase;
 
 /**
  * The  Model interface.

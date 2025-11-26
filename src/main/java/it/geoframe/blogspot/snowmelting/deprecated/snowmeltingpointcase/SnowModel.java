@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geoframe.blogspot.snowmelting.snowmeltingrastercase;
+package it.geoframe.blogspot.snowmelting.deprecated.snowmeltingpointcase;
 
 /**
  * The  SnowModel interface.
  */
-public interface SnowModelRaster {
+public interface SnowModel {
 
 	abstract public double snowValues ();
 
