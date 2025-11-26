@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package snowMeltingRasterCase;
+package it.geoframe.blogspot.snowmelting.snowmeltingpointcase;
 
 
 /**
  * The Class HockModel.
  */
-public class HockModel implements SnowModelRaster{
+public class HockModel implements SnowModel{
 
 	/** The combined melting factor. */
 	double combinedMeltingFactor;

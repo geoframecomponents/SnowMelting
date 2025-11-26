@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package snowMeltingRasterCase;
+package it.geoframe.blogspot.snowmelting.snowmeltingrastercase;
 
 
 import java.awt.image.RenderedImage;

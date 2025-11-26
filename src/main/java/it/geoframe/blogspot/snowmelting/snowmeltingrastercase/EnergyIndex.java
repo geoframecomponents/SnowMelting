@@ -1,4 +1,4 @@
-package snowMeltingRasterCase;
+package it.geoframe.blogspot.snowmelting.snowmeltingrastercase;
 
 /**
  * The  Model interface.

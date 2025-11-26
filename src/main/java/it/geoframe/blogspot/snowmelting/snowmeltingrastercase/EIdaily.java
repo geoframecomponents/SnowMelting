@@ -16,13 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package snowMeltingPointCase;
+package it.geoframe.blogspot.snowmelting.snowmeltingrastercase;
+import java.awt.image.WritableRaster;
 
-/**
- * The  SnowModel interface.
- */
-public interface SnowModel {
+public class EIdaily implements EnergyIndex{
 
-	abstract public double snowValues ();
+
+	WritableRaster energyImap;
+	int i;
+	int j;
+	double hoursToMonth;
+	
+
+	public EIdaily(WritableRaster energyImap, int i, int j, double hoursToMonth){
+		
+	this.energyImap=energyImap;
+	this.i=i;
+	this.j=j;
+	this.hoursToMonth=hoursToMonth;
+
+	}
+
+	public double eiValues() {
+		// TODO Auto-generated method stub
+		return energyImap.getSampleDouble(i, j, 0) / (hoursToMonth );
+	}
+
+
 
 }

@@ -16,31 +16,48 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package snowMeltingRasterCase;
+package it.geoframe.blogspot.snowmelting.snowmeltingrastercase;
+
 import java.awt.image.WritableRaster;
 
-public class EIdaily implements EnergyIndex{
 
+public class EIminimum implements EnergyIndex{
 
 	WritableRaster energyImap;
-	int i;
-	int j;
 	double hoursToMonth;
-	
+	int height;
+	int width;
 
-	public EIdaily(WritableRaster energyImap, int i, int j, double hoursToMonth){
-		
-	this.energyImap=energyImap;
-	this.i=i;
-	this.j=j;
-	this.hoursToMonth=hoursToMonth;
 
+
+	public EIminimum(WritableRaster energyImap, double hoursToMonth){
+
+		this.energyImap=energyImap;
+		this.hoursToMonth=hoursToMonth;
+		height=energyImap.getHeight();
+		width=energyImap.getWidth();		
 	}
 
 	public double eiValues() {
-		// TODO Auto-generated method stub
-		return energyImap.getSampleDouble(i, j, 0) / (hoursToMonth );
+
+		double minimo = 10000000;
+		for (int j = 0; j < height; j++) {
+			for (int i = 0; i < width; i++) {
+				if (energyImap.getSample(i, j, 0) != -9999) {
+					if (energyImap.getSample(i, j, 0) / hoursToMonth > 0.0
+							&& energyImap.getSample(i, j, 0) / hoursToMonth < minimo) {
+						minimo = energyImap.getSample(i, j, 0) / hoursToMonth;
+
+					}
+				}
+			}
+		}
+
+		return minimo;
+
 	}
+
+
 
 
 
