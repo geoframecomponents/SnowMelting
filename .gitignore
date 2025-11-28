@@ -1,2 +1,42 @@
 /bin/
 /.gradle/
+.classpath
+.project
+.settings/
+.apt_generated/
+.factorypath
+.loadpath
+rebel.xml
+
+# Output folders
+bin/
+tmp/
+.metadata/
+.mtj.tmp/
+
+### Gradle ###
+.gradle/
+build/
+
+# Se usi Kotlin DSL:
+# buildSrc/.gradle/
+# buildSrc/build/
+
+# Generated files by annotation processors
+out/
+
+### Java ###
+*.class
+*.log
+*.jar
+*.war
+*.ear
+
+### OS files ###
+.DS_Store
+Thumbs.db
+
+### General ###
+*.swp
+*.swo
+*~
