@@ -32,7 +32,7 @@ repositories {
 
     maven {
         // hatbox 1.0.b7
-        url 'http://maven.geo-solutions.it/'
+        url 'https://maven.geo-solutions.it/'
     }
 
     mavenCentral() //jgt
