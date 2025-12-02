@@ -1,3 +1,30 @@
+# SnowMelting
+
+This repository contains the SnowMelting component of the GEOframe modeling framework, implemented in Java. It provides various conceptual models for simulating snow dynamics, primarily focusing on Snow Water Equivalent (SWE) and snowmelt processes.
+
+
+## Point-Case
+
+The core models are implemented within the **it.geoframe.blogspot.snowmelting.pointcase** package and are designed for single-point simulations.
+
+This component currently includes three primary snowmelt models:
+
+   - **SnowMeltingPointCaseCazorzi.java**: Implements the Cazorzi snowmelt model (Specifics TODO: Add details on the Cazorzi model formulation).
+
+   - **SnowMeltingPointCaseDegreeDay.java**: Implements the Temperature Index (Degree-Day) method.
+
+  - **SnowMeltingPointCaseHock.java**: Implements the Hock snowmelt model (Specifics TODO: Add details on the Hock model formulation).
+
+## Raster-Case Implementation
+
+TODO: Tdocumentations for classes for raster-based ( in **it.geoframe.blogspot.snowmelting.rastercase**), .
+
+---
+
+
+## Mathematical Formulation: Temperature Index Method
+The Degree-Day model (*SnowMeltingPointCaseDegreeDay.java*) is based on the classical temperature index method, as described in **Formetta et al. (2014)**.
+
 **Snowmelt and freezing model** (temperature index method; Formetta et al., 2014)
 
 $$
@@ -47,7 +74,10 @@ $$
 | **Θ**  | Thermodynamic temperature | °C, K                             |
 | **–**  | Dimensionless quantity    | coefficients, ratios, fractions   |
 
+---
+## References
 
+TODO: add all references
 
 Formetta, G., Kampf, S. K., David, O., & Rigon, R. (2014, 6 May). Snow water
 equivalent modeling components in NewAge-JGrass. Geosci. Model Dev., 7 (3),
