@@ -1,7 +1,7 @@
 /*
  * GNU GPL v3 License
  *
- * Copyright 2021 Niccol� Tubini, Giuseppe Formetta, Riccardo Rigon
+ * Copyright 2021 Niccolo Tubini, Giuseppe Formetta, Riccardo Rigon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ import oms3.annotations.Unit;
 		+ "punctual data. The snow melting is computed by using a degree day model. "
 		+ "The inputs of the components are the rainfall, the snowfall"
 		+ "the temperature values")
-@Author(name = "Marialaura Bancheri, Giuseppe Formetta, Niccol� Tubini", contact = "")
+@Author(name = "Marialaura Bancheri, Giuseppe Formetta, Niccolo Tubini", contact = "")
 @Keywords("Hydrology, Snow Model")
 @Label(HMConstants.HYDROGEOMORPHOLOGY)
 @Name("Snow")

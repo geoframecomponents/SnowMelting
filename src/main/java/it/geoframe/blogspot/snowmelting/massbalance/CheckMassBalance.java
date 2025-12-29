@@ -1,7 +1,7 @@
 /*
  * GNU GPL v3 License
  *
- * Copyright 2021 Niccol� Tubini, Giuseppe Formetta, Riccardo Rigon
+ * Copyright 2021 Niccolo Tubini, Giuseppe Formetta, Riccardo Rigon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 package it.geoframe.blogspot.snowmelting.massbalance;
 
 /**
- * @author Niccol� Tubini, Giuseppe Formetta
+ * @author Niccolo Tubini, Giuseppe Formetta
  * 
  */
 public class CheckMassBalance {
