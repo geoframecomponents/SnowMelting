@@ -19,7 +19,7 @@
 
 package org.geoframe.snowmelting.ode;
 
-import it.geoframe.blogspot.numerical.ode.OrdinaryDifferentialEquation;
+import org.geoframe.numerical.ode.OrdinaryDifferentialEquation;
 
 /**
  * @author Niccolo Tubini, Giuseppe Formetta

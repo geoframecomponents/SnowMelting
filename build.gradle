@@ -57,8 +57,6 @@ dependencies {
     //compile group: 'org.hortonmachine', name: 'jgt-oms3', version: '0.10.4'
     implementation group: 'net.sourceforge.hatbox', name: 'hatbox', version: '1.0.b7'   
      implementation group: 'org.geoframe', name: 'numerical', version: '1.0.4-SNAPSHOT'
-    
-    implementation 'org.geotools:gt-main:34.0'
-    implementation group: 'junit', name: 'junit', version: '4.+'
+     implementation group: 'junit', name: 'junit', version: '4.+'
 
 }

@@ -29,7 +29,6 @@ import org.hortonmachine.gears.io.timedependent.OmsTimeSeriesIteratorReader;
 import org.hortonmachine.gears.io.timedependent.OmsTimeSeriesIteratorWriter;
 import org.junit.Test;
 
-import it.geoframe.blogspot.snowmelting.deprecated.snowmeltingpointcase.SnowMeltingPointCase;
 
 /**
  * Test the {@link Snow} module.

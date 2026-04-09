@@ -42,12 +42,12 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
 import org.geoframe.numerical.ode.NewtonRaphson;
-import it.geoframe.blogspot.snowmelting.freezing.Freezing;
-import it.geoframe.blogspot.snowmelting.massbalance.CheckMassBalance;
-import it.geoframe.blogspot.snowmelting.meltingdischarge.MeltingDischarge;
-import it.geoframe.blogspot.snowmelting.ode.ODELiquidWater;
-import it.geoframe.blogspot.snowmelting.ode.ODESolidWater;
-import it.geoframe.blogspot.snowmelting.snowmelt.DegreeDayModel;
+import org.geoframe.snowmelting.freezing.Freezing;
+import org.geoframe.snowmelting.massbalance.CheckMassBalance;
+import org.geoframe.snowmelting.meltingdischarge.MeltingDischarge;
+import org.geoframe.snowmelting.ode.ODELiquidWater;
+import org.geoframe.snowmelting.ode.ODESolidWater;
+import org.geoframe.snowmelting.snowmelt.DegreeDayModel;
 import oms3.annotations.Author;
 import oms3.annotations.Description;
 import oms3.annotations.Execute;
