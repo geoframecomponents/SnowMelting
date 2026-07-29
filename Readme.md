@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SnowMelting
 
 This repository contains the SnowMelting component of the GEOframe modeling framework, implemented in Java. It provides various conceptual models for simulating snow dynamics, primarily focusing on Snow Water Equivalent (SWE) and snowmelt processes.
@@ -25,6 +26,8 @@ TODO: Tdocumentations for classes for raster-based ( in **it.geoframe.blogspot.s
 ## Mathematical Formulation: Temperature Index Method
 The Degree-Day model (*SnowMeltingPointCaseDegreeDay.java*) is based on the classical temperature index method, as described in **Formetta et al. (2014)**.
 
+=======
+>>>>>>> build/add-maven-pom
 **Snowmelt and freezing model** (temperature index method; Formetta et al., 2014)
 
 $$
@@ -74,10 +77,14 @@ $$
 | **Θ**  | Thermodynamic temperature | °C, K                             |
 | **–**  | Dimensionless quantity    | coefficients, ratios, fractions   |
 
+<<<<<<< HEAD
 ---
 ## References
 
 TODO: add all references
+=======
+
+>>>>>>> build/add-maven-pom
 
 Formetta, G., Kampf, S. K., David, O., & Rigon, R. (2014, 6 May). Snow water
 equivalent modeling components in NewAge-JGrass. Geosci. Model Dev., 7 (3),
